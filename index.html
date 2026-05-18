@@ -1,0 +1,2148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Driver App — Tariffs & Add Vehicle</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&family=Noto+Sans+Armenian:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  /* ═══════════════════════ TOKENS ═══════════════════════ */
+  :root, .frame--dark {
+    --color-bg: #0b0b0b;
+    --color-surface: #131313;
+    --color-surface-raised: #191919;
+    --color-hairline: rgba(255, 255, 255, 0.08);
+    --color-pressed: rgba(255, 255, 255, 0.08);
+    --color-text: #ffffff;
+    --color-text-secondary: #868f97;
+    --color-text-tertiary: #999999;
+    --color-text-disabled: #5a626b;
+    --color-btn-primary-bg: #e6e6e6;
+    --color-btn-primary-text: #000000;
+    --color-accent-interactive: #479ffa;
+    --color-accent-highlight: #ffa16c;
+    --color-accent-positive: #4ebe96;
+    --color-accent-negative: #ff5c5c;
+  }
+  .frame--light,
+  body.theme-light .frame--auto {
+    --color-bg: #f6f7f9;
+    --color-surface: #ffffff;
+    --color-surface-raised: #f3f4f6;
+    --color-hairline: rgba(15, 23, 42, 0.08);
+    --color-pressed: rgba(15, 23, 42, 0.04);
+    --color-text: #0f172a;
+    --color-text-secondary: #64748b;
+    --color-text-tertiary: #94a3b8;
+    --color-text-disabled: #cbd5e1;
+    --color-btn-primary-bg: #0b0b0b;
+    --color-btn-primary-text: #ffffff;
+    --color-accent-interactive: #1565c0;
+    --color-accent-highlight: #c65a1f;
+    --color-accent-positive: #10805c;
+    --color-accent-negative: #c62828;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  /* ═══════════════════════ PAGE LAYOUT ═══════════════════════ */
+  html, body {
+    background: #1a1a1a;
+    background-image:
+      radial-gradient(800px 500px at 25% 10%, rgba(255, 161, 108, 0.06), transparent 60%),
+      radial-gradient(800px 500px at 75% 30%, rgba(71, 159, 250, 0.05), transparent 60%);
+    font-family: 'Figtree', 'Noto Sans Armenian', -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    color: #ffffff;
+    min-height: 100vh;
+  }
+  body.theme-light {
+    background: #ececee;
+    background-image:
+      radial-gradient(800px 500px at 25% 10%, rgba(255, 161, 108, 0.10), transparent 60%),
+      radial-gradient(800px 500px at 75% 30%, rgba(71, 159, 250, 0.08), transparent 60%);
+    color: #0b0b0b;
+  }
+  .page-header {
+    padding: 32px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    position: sticky;
+    top: 0;
+    backdrop-filter: blur(20px);
+    background: rgba(20, 20, 20, 0.7);
+    z-index: 100;
+  }
+  body.theme-light .page-header {
+    background: rgba(236, 236, 238, 0.85);
+    border-bottom: 1px solid rgba(0,0,0,0.08);
+  }
+  .page-title {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  .page-title small {
+    font-size: 12px;
+    font-weight: 500;
+    color: #868f97;
+    margin-left: 12px;
+    letter-spacing: 0;
+  }
+  .theme-toggle {
+    display: flex;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 999px;
+    padding: 4px;
+  }
+  body.theme-light .theme-toggle {
+    background: rgba(0,0,0,0.05);
+    border-color: rgba(0,0,0,0.08);
+  }
+  .theme-toggle button {
+    background: transparent;
+    border: 0;
+    color: inherit;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 8px 16px;
+    border-radius: 999px;
+    cursor: pointer;
+    opacity: 0.6;
+  }
+  .theme-toggle button.active {
+    background: #ffffff;
+    color: #0b0b0b;
+    opacity: 1;
+  }
+  body.theme-light .theme-toggle button.active {
+    background: #0b0b0b;
+    color: #ffffff;
+  }
+  .section {
+    padding: 56px 40px 32px;
+  }
+  .section-header {
+    margin-bottom: 32px;
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+  }
+  .section-num {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    color: #ffa16c;
+  }
+  .section-title {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+  }
+  .section-desc {
+    font-size: 14px;
+    color: #868f97;
+    margin-left: auto;
+    max-width: 400px;
+    text-align: right;
+  }
+  .frames-grid {
+    display: flex;
+    gap: 32px;
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+  .stage {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .stage-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #999999;
+  }
+  .stage-label-num {
+    color: #479ffa;
+    margin-right: 6px;
+  }
+
+  /* ═══════════════════════ PHONE FRAME ═══════════════════════ */
+  .frame {
+    width: 390px;
+    height: 844px;
+    background: var(--color-bg);
+    background-image: radial-gradient(120% 50% at 50% 0%, rgba(71, 159, 250, 0.05), transparent 60%);
+    color: var(--color-text);
+    overflow: hidden;
+    position: relative;
+    border-radius: 44px;
+    border: 1px solid rgba(0, 0, 0, 0.5);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.05),
+      0 1px 0 rgba(255, 255, 255, 0.02),
+      0 30px 80px rgba(0, 0, 0, 0.45);
+    font-family: 'Figtree', 'Noto Sans Armenian', sans-serif;
+    font-size: 16px;
+    line-height: 23px;
+  }
+  .notch {
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 120px;
+    height: 32px;
+    background: #000;
+    border-radius: 999px;
+    z-index: 50;
+  }
+  .status-bar {
+    position: relative;
+    z-index: 5;
+    height: 44px;
+    padding: 0 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--color-text);
+  }
+  .status-bar__time { font-variant-numeric: tabular-nums; }
+  .status-bar__icons { display: flex; gap: 6px; align-items: center; }
+
+  .app-bar {
+    position: relative; z-index: 4;
+    height: 44px;
+    padding: 0 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .app-bar__title {
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .app-bar__action {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    background: transparent;
+    border: 0;
+    padding: 0 8px;
+    height: 44px;
+    cursor: pointer;
+  }
+  .icon-btn {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: 0;
+    color: var(--color-text);
+    cursor: pointer;
+  }
+
+  /* ═══════════════════════ BUTTONS + FOOTER ═══════════════════════ */
+  .btn-primary {
+    height: 52px;
+    min-height: 52px;
+    flex-shrink: 0;
+    border-radius: 999px;
+    background: var(--color-btn-primary-bg);
+    color: var(--color-btn-primary-text);
+    border: 0;
+    padding: 0 24px;
+    font-family: inherit;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: -0.005em;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .btn-primary--full { width: 100%; }
+  .btn-primary--disabled {
+    background: var(--color-surface-raised);
+    color: var(--color-text-disabled);
+    cursor: not-allowed;
+  }
+  .btn-primary--disabled svg { opacity: 0.5; }
+  .btn-primary--accent {
+    background: var(--color-accent-interactive);
+    color: #ffffff;
+  }
+  .btn-primary--positive {
+    background: var(--color-accent-positive);
+    color: #ffffff;
+  }
+  .action-footer {
+    margin-top: auto;
+    padding: 16px 16px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .action-footer__hint {
+    font-size: 12px;
+    color: var(--color-text-tertiary);
+    text-align: center;
+    line-height: 18px;
+  }
+  .progress-hint {
+    margin-top: 12px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-hairline);
+    border-radius: 14px;
+    padding: 12px 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .progress-hint__dot {
+    width: 28px;
+    height: 28px;
+    border-radius: 999px;
+    background: rgba(71,159,250,0.14);
+    color: var(--color-accent-interactive);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 12px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+  .frame--light .progress-hint__dot,
+  body.theme-light .progress-hint__dot {
+    background: rgba(21,101,192,0.10);
+  }
+  .progress-hint__text {
+    font-size: 13px;
+    color: var(--color-text);
+    font-weight: 500;
+    line-height: 18px;
+  }
+
+  /* ═══════════════════════ FORM FIELDS ═══════════════════════ */
+  .step-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+  .step-bar__pip {
+    height: 4px;
+    flex: 1;
+    background: var(--color-surface-raised);
+    border-radius: 999px;
+  }
+  .step-bar__pip--done,
+  .step-bar__pip--current {
+    background: var(--color-accent-interactive);
+  }
+  .frame--light .step-bar__pip:not(.step-bar__pip--done):not(.step-bar__pip--current),
+  body.theme-light .step-bar__pip:not(.step-bar__pip--done):not(.step-bar__pip--current) {
+    background: rgba(15, 23, 42, 0.10);
+  }
+  .step-bar__label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    letter-spacing: 0.04em;
+    margin-left: 4px;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .field { margin-bottom: 14px; }
+  .field__label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    letter-spacing: 0.04em;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .input {
+    width: 100%;
+    height: 48px;
+    background: var(--color-surface-raised);
+    border: 1px solid transparent;
+    border-radius: 12px;
+    padding: 0 16px;
+    color: var(--color-text);
+    font-family: inherit;
+    font-size: 16px;
+    font-weight: 500;
+    outline: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .input--focused {
+    border-color: var(--color-accent-interactive);
+    background: var(--color-surface);
+  }
+  .input--warning {
+    border-color: var(--color-accent-negative);
+  }
+  .frame--light .input,
+  body.theme-light .input {
+    background: var(--color-surface);
+    border-color: var(--color-hairline);
+  }
+  .frame--light .input--focused,
+  body.theme-light .input--focused {
+    border-color: var(--color-accent-interactive);
+  }
+  .frame--light .input--warning,
+  body.theme-light .input--warning {
+    border-color: var(--color-accent-negative);
+  }
+  .input__placeholder {
+    color: var(--color-text-tertiary);
+    font-weight: 400;
+  }
+  .input__suffix {
+    margin-left: auto;
+    color: var(--color-text-secondary);
+    font-size: 13px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+  }
+  .input--select { justify-content: space-between; }
+  .input--select svg { color: var(--color-text-secondary); }
+  .field__hint {
+    font-size: 12px;
+    color: var(--color-text-tertiary);
+    margin-top: 6px;
+    line-height: 17px;
+  }
+  .field__warning {
+    font-size: 12px;
+    color: var(--color-accent-negative);
+    margin-top: 6px;
+    line-height: 17px;
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  /* ═══════════════════════ HALOS ═══════════════════════ */
+  .halo-cool {
+    box-shadow: 0 0 0 1px rgba(71,159,250,0.22) inset;
+    background-image:
+      radial-gradient(120% 80% at 50% 100%, rgba(71,159,250,0.07), transparent 60%);
+  }
+  .halo-positive {
+    box-shadow: 0 0 0 1px rgba(78,190,150,0.22) inset;
+    background-image:
+      radial-gradient(120% 80% at 50% 100%, rgba(78,190,150,0.07), transparent 60%);
+  }
+  .frame--light .halo-cool,
+  body.theme-light .halo-cool {
+    box-shadow:
+      0 12px 32px -8px rgba(21,101,192,0.22),
+      0 0 0 1px rgba(21,101,192,0.18) inset;
+    background-image:
+      radial-gradient(120% 80% at 50% 100%, rgba(21,101,192,0.10), transparent 60%);
+  }
+  .frame--light .halo-positive,
+  body.theme-light .halo-positive {
+    box-shadow:
+      0 12px 32px -8px rgba(16,128,92,0.22),
+      0 0 0 1px rgba(16,128,92,0.18) inset;
+    background-image:
+      radial-gradient(120% 80% at 50% 100%, rgba(16,128,92,0.10), transparent 60%);
+  }
+
+  /* ═══════════════════════ FEY PILL ═══════════════════════ */
+  .fey-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 4px 9px;
+    border-radius: 999px;
+    border: 1px solid transparent;
+  }
+  .fey-pill--positive {
+    background: rgba(78,190,150,0.14);
+    color: var(--color-accent-positive);
+    border-color: rgba(78,190,150,0.28);
+  }
+  .fey-pill--warning {
+    background: rgba(255,161,108,0.14);
+    color: var(--color-accent-highlight);
+    border-color: rgba(255,161,108,0.28);
+  }
+  .fey-pill--info {
+    background: rgba(71,159,250,0.14);
+    color: var(--color-accent-interactive);
+    border-color: rgba(71,159,250,0.28);
+  }
+  .frame--light .fey-pill--warning,
+  body.theme-light .fey-pill--warning {
+    background: rgba(198,90,31,0.10);
+    border-color: rgba(198,90,31,0.30);
+  }
+
+  /* ═══════════════════════ DRIVER MAP (background only) ═══════════════════════ */
+  .driver-map {
+    position: absolute;
+    inset: 0;
+    background-color: var(--color-bg);
+    overflow: hidden;
+    z-index: 0;
+  }
+  /* Subtle road suggestion using gradients (no external image dependency) */
+  .driver-map::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(118deg, transparent 38%, rgba(255,255,255,0.04) 38%, rgba(255,255,255,0.04) 40%, transparent 40%),
+      linear-gradient(82deg, transparent 58%, rgba(255,255,255,0.04) 58%, rgba(255,255,255,0.04) 60%, transparent 60%),
+      linear-gradient(180deg, var(--color-bg), var(--color-surface) 70%);
+    z-index: 0;
+  }
+  .frame--light .driver-map::before,
+  body.theme-light .driver-map::before {
+    background:
+      linear-gradient(118deg, transparent 38%, rgba(15,23,42,0.05) 38%, rgba(15,23,42,0.05) 40%, transparent 40%),
+      linear-gradient(82deg, transparent 58%, rgba(15,23,42,0.05) 58%, rgba(15,23,42,0.05) 60%, transparent 60%),
+      linear-gradient(180deg, var(--color-bg), var(--color-surface-raised) 70%);
+  }
+  .driver-map::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(120% 80% at 50% 40%, transparent 55%, rgba(0, 0, 0, 0.45));
+    pointer-events: none;
+    z-index: 1;
+  }
+  .frame--light .driver-map::after,
+  body.theme-light .driver-map::after {
+    background: radial-gradient(120% 80% at 50% 40%, transparent 55%, rgba(15, 23, 42, 0.10));
+  }
+  /* Scrim under sheet — heavier so the sheet reads as primary */
+  .sheet-scrim {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.55);
+    z-index: 2;
+  }
+  .frame--light .sheet-scrim,
+  body.theme-light .sheet-scrim {
+    background: rgba(15, 23, 42, 0.32);
+  }
+
+  /* ═══════════════════════ ORDER / BOTTOM SHEET ═══════════════════════ */
+  .order-sheet {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--color-surface);
+    background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.025), transparent 40%);
+    border-top: 1px solid var(--color-hairline);
+    border-radius: 24px 24px 0 0;
+    padding: 16px;
+    z-index: 6;
+    box-shadow: 0 -8px 32px rgba(0,0,0,0.4);
+    display: flex;
+    flex-direction: column;
+    max-height: 700px;
+  }
+  .frame--light .order-sheet,
+  body.theme-light .order-sheet {
+    box-shadow: 0 -8px 32px rgba(0,0,0,0.08);
+  }
+  .order-sheet__handle {
+    width: 36px;
+    height: 4px;
+    border-radius: 999px;
+    background: var(--color-hairline);
+    margin: 0 auto 12px;
+  }
+  .order-sheet__header {
+    margin-bottom: 14px;
+    padding: 0 4px;
+  }
+  .order-sheet__title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--color-text);
+    letter-spacing: -0.01em;
+  }
+  .order-sheet__title-meta {
+    font-size: 12px;
+    color: var(--color-text-secondary);
+    font-weight: 500;
+    margin-top: 4px;
+    line-height: 17px;
+  }
+
+  /* ═══════════════════════ TARIFF ROW (new) ═══════════════════════ */
+  .tariff-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    overflow-y: auto;
+  }
+  .tariff-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-hairline);
+    border-radius: 14px;
+  }
+  .frame--light .tariff-row,
+  body.theme-light .tariff-row {
+    background: var(--color-surface-raised);
+  }
+  .tariff-row--active {
+    border-color: rgba(71,159,250,0.28);
+    background: rgba(71,159,250,0.06);
+  }
+  .frame--light .tariff-row--active,
+  body.theme-light .tariff-row--active {
+    background: rgba(21,101,192,0.05);
+    border-color: rgba(21,101,192,0.28);
+  }
+  .tariff-row__icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: var(--color-surface-raised);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-text);
+    flex-shrink: 0;
+  }
+  .frame--light .tariff-row__icon,
+  body.theme-light .tariff-row__icon {
+    background: var(--color-bg);
+  }
+  .tariff-row__body { flex: 1; min-width: 0; }
+  .tariff-row__name-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 2px;
+  }
+  .tariff-row__name {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--color-text);
+  }
+  .tariff-row__sub {
+    font-size: 12px;
+    color: var(--color-text-secondary);
+    line-height: 16px;
+  }
+  .tariff-row__sub--muted { color: var(--color-text-tertiary); }
+
+  /* Toggle switch (new) */
+  .toggle {
+    width: 44px;
+    height: 26px;
+    border-radius: 999px;
+    background: var(--color-surface-raised);
+    border: 1px solid var(--color-hairline);
+    position: relative;
+    flex-shrink: 0;
+  }
+  .frame--light .toggle,
+  body.theme-light .toggle {
+    background: #e2e8f0;
+    border-color: rgba(15, 23, 42, 0.06);
+  }
+  .toggle__thumb {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 20px;
+    height: 20px;
+    border-radius: 999px;
+    background: #ffffff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.35);
+  }
+  .toggle--on {
+    background: var(--color-accent-interactive);
+    border-color: var(--color-accent-interactive);
+  }
+  .frame--light .toggle--on,
+  body.theme-light .toggle--on {
+    background: var(--color-accent-interactive);
+    border-color: var(--color-accent-interactive);
+  }
+  .toggle--on .toggle__thumb {
+    left: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+  }
+
+  /* ═══════════════════════ VEHICLE PICKER (reused from § 10.1) ═══════════════════════ */
+  .vehicle-list { padding: 4px 0; display: flex; flex-direction: column; }
+  .vehicle-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px;
+    background: var(--color-surface);
+    background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent 55%);
+    border: 1px solid var(--color-hairline);
+    border-radius: 14px;
+  }
+  .frame--light .vehicle-row,
+  body.theme-light .vehicle-row {
+    background-image: linear-gradient(180deg, rgba(15, 23, 42, 0.04), transparent 50%);
+  }
+  .vehicle-row + .vehicle-row,
+  .vehicle-row + .vehicle-row--add { margin-top: 10px; }
+  .vehicle-row--current {
+    border-color: var(--color-accent-interactive);
+    background: rgba(83,142,255,0.08);
+  }
+  .frame--light .vehicle-row--current,
+  body.theme-light .vehicle-row--current {
+    background: rgba(21,101,192,0.06);
+  }
+  .vehicle-row--blocked { opacity: 0.66; }
+  .vehicle-row__thumb {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: var(--color-surface-raised);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-text-secondary);
+    flex-shrink: 0;
+  }
+  .vehicle-row__body { flex: 1; min-width: 0; }
+  .vehicle-row__name {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--color-text);
+    margin-bottom: 2px;
+  }
+  .vehicle-row__plate {
+    font-size: 12px;
+    color: var(--color-text-tertiary);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.02em;
+  }
+  .vehicle-row__tariffs {
+    font-size: 11px;
+    color: var(--color-text-secondary);
+    margin-top: 4px;
+    font-weight: 500;
+  }
+  .vehicle-row__status {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 5px 9px;
+    border-radius: 999px;
+    flex-shrink: 0;
+    border: 1px solid transparent;
+  }
+  .vehicle-row__status--active {
+    background: rgba(78,190,150,0.14);
+    color: var(--color-accent-positive);
+    border-color: rgba(78,190,150,0.28);
+  }
+  .vehicle-row__status--inspect {
+    background: rgba(255,161,108,0.14);
+    color: var(--color-accent-highlight);
+    border-color: rgba(255,161,108,0.28);
+  }
+  .vehicle-row__status--blocked {
+    background: rgba(255,92,92,0.14);
+    color: var(--color-accent-negative);
+    border-color: rgba(255,92,92,0.30);
+  }
+  .frame--light .vehicle-row__status--blocked,
+  body.theme-light .vehicle-row__status--blocked {
+    background: rgba(198,40,40,0.10);
+    border-color: rgba(198,40,40,0.30);
+  }
+
+  /* Add-vehicle row — dashed Cosmic-Blue invitation tile */
+  .vehicle-row--add {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 14px;
+    background: transparent;
+    border: 1px dashed var(--color-accent-interactive);
+    border-radius: 14px;
+    cursor: pointer;
+  }
+  .vehicle-row--add .vehicle-row__thumb {
+    background: rgba(71,159,250,0.10);
+    color: var(--color-accent-interactive);
+  }
+  .frame--light .vehicle-row--add .vehicle-row__thumb,
+  body.theme-light .vehicle-row--add .vehicle-row__thumb {
+    background: rgba(21,101,192,0.08);
+  }
+  .vehicle-row--add .vehicle-row__name {
+    color: var(--color-accent-interactive);
+  }
+  .vehicle-row--add .vehicle-row__sub {
+    font-size: 12px;
+    color: var(--color-text-secondary);
+    margin-top: 2px;
+    line-height: 17px;
+  }
+
+  /* ═══════════════════════ ADD VEHICLE — SHARED SCREEN ═══════════════════════ */
+  .add-vehicle {
+    height: calc(100% - 88px); /* status + app bar */
+    padding: 8px 20px 0;
+    display: flex;
+    flex-direction: column;
+  }
+  .add-vehicle__eyebrow {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-text-tertiary);
+    margin-bottom: 6px;
+  }
+  .add-vehicle__title {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 26px;
+    margin-bottom: 18px;
+  }
+
+  /* ═══════════════════════ DOCUMENT UPLOAD TILES ═══════════════════════ */
+  .doc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  .doc-tile {
+    background: var(--color-surface);
+    border: 1px solid var(--color-hairline);
+    border-radius: 16px;
+    padding: 16px 14px;
+    min-height: 168px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 10px;
+  }
+  .doc-tile--empty {
+    background: transparent;
+    border: 1px dashed var(--color-hairline);
+  }
+  .frame--light .doc-tile--empty,
+  body.theme-light .doc-tile--empty {
+    border-color: rgba(15, 23, 42, 0.18);
+  }
+  .doc-tile--uploaded {
+    border-color: rgba(78,190,150,0.30);
+  }
+  .doc-tile__icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-surface-raised);
+    color: var(--color-text-secondary);
+  }
+  .doc-tile--uploaded .doc-tile__icon {
+    background: rgba(78,190,150,0.14);
+    color: var(--color-accent-positive);
+  }
+  .doc-tile--empty .doc-tile__icon {
+    background: rgba(71,159,250,0.10);
+    color: var(--color-accent-interactive);
+  }
+  .frame--light .doc-tile--empty .doc-tile__icon,
+  body.theme-light .doc-tile--empty .doc-tile__icon {
+    background: rgba(21,101,192,0.08);
+  }
+  .doc-tile__label {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--color-text);
+    line-height: 17px;
+  }
+  .doc-tile__meta {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--color-text-tertiary);
+    line-height: 15px;
+  }
+  .doc-tile__meta--positive {
+    color: var(--color-accent-positive);
+    font-weight: 700;
+  }
+
+  /* ═══════════════════════ SETTINGS MENU ROWS ═══════════════════════ */
+  .settings-scroll {
+    padding: 8px 16px 0;
+    height: calc(100% - 88px);
+    overflow-y: auto;
+  }
+  .menu-group-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--color-text-secondary);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 14px 4px 8px;
+  }
+  .menu-group {
+    background: var(--color-surface);
+    background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent 35%);
+    border: 1px solid var(--color-hairline);
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 12px;
+  }
+  .frame--light .menu-group,
+  body.theme-light .menu-group {
+    background-image: linear-gradient(180deg, rgba(15, 23, 42, 0.02), transparent 35%);
+  }
+  .menu-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px;
+    border-bottom: 1px solid var(--color-hairline);
+    cursor: pointer;
+  }
+  .menu-item:last-child { border-bottom: 0; }
+  .menu-item__icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 9px;
+    background: var(--color-surface-raised);
+    color: var(--color-text-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .menu-item__icon--accent {
+    background: rgba(71, 159, 250, 0.10);
+    color: var(--color-accent-interactive);
+  }
+  .frame--light .menu-item__icon--accent,
+  body.theme-light .menu-item__icon--accent {
+    background: rgba(21, 101, 192, 0.08);
+  }
+  .menu-item__body { flex: 1; min-width: 0; }
+  .menu-item__name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-text);
+  }
+  .menu-item__meta {
+    font-size: 12px;
+    color: var(--color-text-secondary);
+    margin-top: 1px;
+    line-height: 17px;
+  }
+  .menu-item__chevron {
+    color: var(--color-text-tertiary);
+    flex-shrink: 0;
+    display: flex;
+  }
+  .settings-row__value {
+    font-size: 13px;
+    color: var(--color-text-secondary);
+    flex-shrink: 0;
+  }
+  .menu-item__badge {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 4px 8px;
+    border-radius: 999px;
+    border: 1px solid transparent;
+    flex-shrink: 0;
+  }
+  .menu-item__badge--warn {
+    background: rgba(255, 161, 108, 0.14);
+    color: var(--color-accent-highlight);
+    border-color: rgba(255, 161, 108, 0.28);
+  }
+  .frame--light .menu-item__badge--warn,
+  body.theme-light .menu-item__badge--warn {
+    background: rgba(198, 90, 31, 0.10);
+    border-color: rgba(198, 90, 31, 0.30);
+  }
+
+  /* ═══════════════════════ VEHICLE CONTEXT ROW (for tariff sheet) ═══════════════════════ */
+  .vehicle-ctx {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    background: var(--color-surface-raised);
+    border: 1px solid var(--color-hairline);
+    border-radius: 12px;
+    margin-bottom: 12px;
+  }
+  .vehicle-ctx__thumb {
+    width: 32px;
+    height: 32px;
+    border-radius: 9px;
+    background: var(--color-surface);
+    color: var(--color-text-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .vehicle-ctx__body { flex: 1; min-width: 0; }
+  .vehicle-ctx__eyebrow {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--color-text-tertiary);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    line-height: 13px;
+  }
+  .vehicle-ctx__name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-text);
+    line-height: 18px;
+  }
+  .vehicle-ctx__switch {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--color-accent-interactive);
+    background: transparent;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  /* ═══════════════════════ PENDING REVIEW HERO ═══════════════════════ */
+  .pending {
+    height: calc(100% - 88px);
+    padding: 8px 24px 0;
+    display: flex;
+    flex-direction: column;
+  }
+  .pending__hero {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 0 8px 16px;
+  }
+  .pending__icon {
+    width: 88px;
+    height: 88px;
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(78,190,150,0.14);
+    color: var(--color-accent-positive);
+    margin-bottom: 24px;
+  }
+  .pending__title {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 26px;
+    margin-bottom: 10px;
+  }
+  .pending__desc {
+    font-size: 14px;
+    color: var(--color-text-secondary);
+    line-height: 21px;
+    max-width: 280px;
+  }
+  .pending__card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-hairline);
+    border-radius: 16px;
+    padding: 14px 16px;
+    margin: 0 0 12px;
+  }
+  .pending__card-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--color-text);
+    margin-bottom: 4px;
+  }
+  .pending__card-meta {
+    font-size: 12px;
+    color: var(--color-text-secondary);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.02em;
+  }
+</style>
+</head>
+<body class="theme-dark">
+
+<div class="page-header">
+  <div class="page-title">Driver App <small>Tariffs &amp; Add Vehicle · 6 new screens · dark + light</small></div>
+  <div class="theme-toggle">
+    <button class="active" data-theme="dark">Dark</button>
+    <button data-theme="light">Light</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- SECTION 2 — Tariff Picker (new sub-state of Main Screen)        -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">2 · NEW</span>
+    <h2 class="section-title">Tariff Picker</h2>
+    <p class="section-desc">Bottom sheet over the offline main screen. Driver toggles which of the current vehicle&rsquo;s allowed tariffs they want active for this session. Solar Flare hint on the demand-peak tariff.</p>
+  </div>
+
+  <div class="frames-grid">
+
+    <!-- 2.E · Tariff Picker · DARK -->
+    <div class="stage">
+      <div class="stage-label"><span class="stage-label-num">2.E</span>Tariff Picker · Dark</div>
+      <div class="frame frame--dark">
+        <div class="notch"></div>
+        <div class="status-bar">
+          <span class="status-bar__time">9:41</span>
+          <span class="status-bar__icons">
+            <svg width="18" height="10" viewBox="0 0 18 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx="1"/><rect x="5" y="4" width="3" height="6" rx="1"/><rect x="10" y="2" width="3" height="8" rx="1"/><rect x="15" y="0" width="3" height="10" rx="1"/></svg>
+            <svg width="16" height="12" viewBox="0 0 16 12" fill="currentColor"><path d="M8 11.2a1.2 1.2 0 1 0 0-2.4 1.2 1.2 0 0 0 0 2.4Zm3.4-3.6a4.8 4.8 0 0 0-6.8 0L3.4 6.4a6.5 6.5 0 0 1 9.2 0l-1.2 1.2ZM14 5l-1.2 1.2A7.6 7.6 0 0 0 8 4.4 7.6 7.6 0 0 0 3.2 6.2L2 5a9.3 9.3 0 0 1 12 0Z"/></svg>
+            <svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="0.5" y="0.5" width="22" height="11" rx="3" stroke="currentColor" opacity="0.4"/><rect x="2" y="2" width="18" height="8" rx="1.5" fill="currentColor"/><rect x="23" y="4" width="2" height="4" rx="1" fill="currentColor" opacity="0.4"/></svg>
+          </span>
+        </div>
+
+        <!-- Dimmed main-screen background -->
+        <div class="driver-map"></div>
+        <div class="sheet-scrim"></div>
+
+        <!-- Bottom sheet -->
+        <div class="order-sheet halo-cool">
+          <div class="order-sheet__handle"></div>
+          <div class="order-sheet__header">
+            <div class="order-sheet__title">Active tariffs</div>
+            <div class="order-sheet__title-meta">Toggle off the ones you&rsquo;d rather skip this session.</div>
+          </div>
+
+          <div class="vehicle-ctx">
+            <div class="vehicle-ctx__thumb">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17h14M6 13l2-5h8l2 5"/><circle cx="7.5" cy="17" r="2"/><circle cx="16.5" cy="17" r="2"/></svg>
+            </div>
+            <div class="vehicle-ctx__body">
+              <div class="vehicle-ctx__eyebrow">Tariffs for</div>
+              <div class="vehicle-ctx__name">Toyota Camry &middot; 12 AB 345</div>
+            </div>
+            <button class="vehicle-ctx__switch">Switch car</button>
+          </div>
+
+          <div class="tariff-list">
+
+            <div class="tariff-row tariff-row--active">
+              <div class="tariff-row__icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17h14M6 13l2-5h8l2 5"/><circle cx="7.5" cy="17" r="2"/><circle cx="16.5" cy="17" r="2"/></svg>
+              </div>
+              <div class="tariff-row__body">
+                <div class="tariff-row__name-row">
+                  <span class="tariff-row__name">Economy</span>
+                  <span class="fey-pill fey-pill--warning">Peak demand</span>
+                </div>
+                <div class="tariff-row__sub">150 ֏/km &middot; 40 ֏/min &middot; base 600 ֏</div>
+              </div>
+              <div class="toggle toggle--on"><div class="toggle__thumb"></div></div>
+            </div>
+
+            <div class="tariff-row tariff-row--active">
+              <div class="tariff-row__icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 16h16M5 12l3-6h8l3 6"/><circle cx="7.5" cy="16" r="2"/><circle cx="16.5" cy="16" r="2"/></svg>
+              </div>
+              <div class="tariff-row__body">
+                <div class="tariff-row__name-row">
+                  <span class="tariff-row__name">Comfort</span>
+                </div>
+                <div class="tariff-row__sub">200 ֏/km &middot; 50 ֏/min &middot; base 900 ֏</div>
+              </div>
+              <div class="toggle toggle--on"><div class="toggle__thumb"></div></div>
+            </div>
+
+            <div class="tariff-row">
+              <div class="tariff-row__icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 15h18M4 11l3-5h10l3 5"/><circle cx="7" cy="15" r="2"/><circle cx="17" cy="15" r="2"/><path d="M8 11h8"/></svg>
+              </div>
+              <div class="tariff-row__body">
+                <div class="tariff-row__name-row">
+                  <span class="tariff-row__name">Business</span>
+                </div>
+                <div class="tariff-row__sub">340 ֏/km &middot; 80 ֏/min &middot; base 1 800 ֏</div>
+              </div>
+              <div class="toggle"><div class="toggle__thumb"></div></div>
+            </div>
+
+            <div class="tariff-row">
+              <div class="tariff-row__icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="13" height="9" rx="1"/><path d="M16 10h3l2 3v3h-5"/><circle cx="7" cy="17" r="2"/><circle cx="17.5" cy="17" r="2"/></svg>
+              </div>
+              <div class="tariff-row__body">
+                <div class="tariff-row__name-row">
+                  <span class="tariff-row__name">Delivery</span>
+                </div>
+                <div class="tariff-row__sub tariff-row__sub--muted">160 ֏/km &middot; box-only · no passengers</div>
+              </div>
+              <div class="toggle"><div class="toggle__thumb"></div></div>
+            </div>
+
+          </div>
+
+          <div class="action-footer">
+            <button class="btn-primary btn-primary--full">Save &middot; 2 active</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2.E · Tariff Picker · LIGHT -->
+    <div class="stage">
+      <div class="stage-label"><span class="stage-label-num">2.E</span>Tariff Picker · Light</div>
+      <div class="frame frame--light">
+        <div class="notch"></div>
+        <div class="status-bar">
+          <span class="status-bar__time">9:41</span>
+          <span class="status-bar__icons">
+            <svg width="18" height="10" viewBox="0 0 18 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx="1"/><rect x="5" y="4" width="3" height="6" rx="1"/><rect x="10" y="2" width="3" height="8" rx="1"/><rect x="15" y="0" width="3" height="10" rx="1"/></svg>
+            <svg width="16" height="12" viewBox="0 0 16 12" fill="currentColor"><path d="M8 11.2a1.2 1.2 0 1 0 0-2.4 1.2 1.2 0 0 0 0 2.4Zm3.4-3.6a4.8 4.8 0 0 0-6.8 0L3.4 6.4a6.5 6.5 0 0 1 9.2 0l-1.2 1.2ZM14 5l-1.2 1.2A7.6 7.6 0 0 0 8 4.4 7.6 7.6 0 0 0 3.2 6.2L2 5a9.3 9.3 0 0 1 12 0Z"/></svg>
+            <svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="0.5" y="0.5" width="22" height="11" rx="3" stroke="currentColor" opacity="0.4"/><rect x="2" y="2" width="18" height="8" rx="1.5" fill="currentColor"/><rect x="23" y="4" width="2" height="4" rx="1" fill="currentColor" opacity="0.4"/></svg>
+          </span>
+        </div>
+
+        <div class="driver-map"></div>
+        <div class="sheet-scrim"></div>
+
+        <div class="order-sheet halo-cool">
+          <div class="order-sheet__handle"></div>
+          <div class="order-sheet__header">
+            <div class="order-sheet__title">Active tariffs</div>
+            <div class="order-sheet__title-meta">Toggle off the ones you&rsquo;d rather skip this session.</div>
+          </div>
+
+          <div class="vehicle-ctx">
+            <div class="vehicle-ctx__thumb">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17h14M6 13l2-5h8l2 5"/><circle cx="7.5" cy="17" r="2"/><circle cx="16.5" cy="17" r="2"/></svg>
+            </div>
+            <div class="vehicle-ctx__body">
+              <div class="vehicle-ctx__eyebrow">Tariffs for</div>
+              <div class="vehicle-ctx__name">Toyota Camry &middot; 12 AB 345</div>
+            </div>
+            <button class="vehicle-ctx__switch">Switch car</button>
+          </div>
+
+          <div class="tariff-list">
+
+            <div class="tariff-row tariff-row--active">
+              <div class="tariff-row__icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17h14M6 13l2-5h8l2 5"/><circle cx="7.5" cy="17" r="2"/><circle cx="16.5" cy="17" r="2"/></svg>
+              </div>
+              <div class="tariff-row__body">
+                <div class="tariff-row__name-row">
+                  <span class="tariff-row__name">Economy</span>
+                  <span class="fey-pill fey-pill--warning">Peak demand</span>
+                </div>
+                <div class="tariff-row__sub">150 ֏/km &middot; 40 ֏/min &middot; base 600 ֏</div>
+              </div>
+              <div class="toggle toggle--on"><div class="toggle__thumb"></div></div>
+            </div>
+
+            <div class="tariff-row tariff-row--active">
+              <div class="tariff-row__icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 16h16M5 12l3-6h8l3 6"/><circle cx="7.5" cy="16" r="2"/><circle cx="16.5" cy="16" r="2"/></svg>
+              </div>
+              <div class="tariff-row__body">
+                <div class="tariff-row__name-row">
+                  <span class="tariff-row__name">Comfort</span>
+                </div>
+                <div class="tariff-row__sub">200 ֏/km &middot; 50 ֏/min &middot; base 900 ֏</div>
+              </div>
+              <div class="toggle toggle--on"><div class="toggle__thumb"></div></div>
+            </div>
+
+            <div class="tariff-row">
+              <div class="tariff-row__icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 15h18M4 11l3-5h10l3 5"/><circle cx="7" cy="15" r="2"/><circle cx="17" cy="15" r="2"/><path d="M8 11h8"/></svg>
+              </div>
+              <div class="tariff-row__body">
+                <div class="tariff-row__name-row">
+                  <span class="tariff-row__name">Business</span>
+                </div>
+                <div class="tariff-row__sub">340 ֏/km &middot; 80 ֏/min &middot; base 1 800 ֏</div>
+              </div>
+              <div class="toggle"><div class="toggle__thumb"></div></div>
+            </div>
+
+            <div class="tariff-row">
+              <div class="tariff-row__icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="13" height="9" rx="1"/><path d="M16 10h3l2 3v3h-5"/><circle cx="7" cy="17" r="2"/><circle cx="17.5" cy="17" r="2"/></svg>
+              </div>
+              <div class="tariff-row__body">
+                <div class="tariff-row__name-row">
+                  <span class="tariff-row__name">Delivery</span>
+                </div>
+                <div class="tariff-row__sub tariff-row__sub--muted">160 ֏/km &middot; box-only · no passengers</div>
+              </div>
+              <div class="toggle"><div class="toggle__thumb"></div></div>
+            </div>
+
+          </div>
+
+          <div class="action-footer">
+            <button class="btn-primary btn-primary--full">Save &middot; 2 active</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- SECTION 10.1.D — Vehicle Picker with Add row                    -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">10.1.D · NEW</span>
+    <h2 class="section-title">Vehicle Picker &mdash; with Add</h2>
+    <p class="section-desc">Updated picker (was 10.1.A). New &ldquo;+ Add a vehicle&rdquo; row at the bottom enters the 3-step add flow. Tariffs now show as a subline under each car.</p>
+  </div>
+
+  <div class="frames-grid">
+
+    <!-- 10.1.D · DARK -->
+    <div class="stage">
+      <div class="stage-label"><span class="stage-label-num">10.1.D</span>Vehicle Picker · Dark</div>
+      <div class="frame frame--dark">
+        <div class="notch"></div>
+        <div class="status-bar">
+          <span class="status-bar__time">9:41</span>
+          <span class="status-bar__icons">
+            <svg width="18" height="10" viewBox="0 0 18 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx="1"/><rect x="5" y="4" width="3" height="6" rx="1"/><rect x="10" y="2" width="3" height="8" rx="1"/><rect x="15" y="0" width="3" height="10" rx="1"/></svg>
+            <svg width="16" height="12" viewBox="0 0 16 12" fill="currentColor"><path d="M8 11.2a1.2 1.2 0 1 0 0-2.4 1.2 1.2 0 0 0 0 2.4Zm3.4-3.6a4.8 4.8 0 0 0-6.8 0L3.4 6.4a6.5 6.5 0 0 1 9.2 0l-1.2 1.2ZM14 5l-1.2 1.2A7.6 7.6 0 0 0 8 4.4 7.6 7.6 0 0 0 3.2 6.2L2 5a9.3 9.3 0 0 1 12 0Z"/></svg>
+            <svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="0.5" y="0.5" width="22" height="11" rx="3" stroke="currentColor" opacity="0.4"/><rect x="2" y="2" width="18" height="8" rx="1.5" fill="currentColor"/><rect x="23" y="4" width="2" height="4" rx="1" fill="currentColor" opacity="0.4"/></svg>
+          </span>
+        </div>
+        <div class="app-bar">
+          <button class="icon-btn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+          <div class="app-bar__title">My vehicles</div>
+          <span style="width:44px"></span>
+        </div>
+
+        <div style="padding: 8px 16px; display: flex; flex-direction: column; height: calc(100% - 88px);">
+          <div class="vehicle-list">
+
+            <div class="vehicle-row vehicle-row--current">
+              <div class="vehicle-row__thumb">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17h14M6 13l2-5h8l2 5"/><circle cx="7.5" cy="17" r="2"/><circle cx="16.5" cy="17" r="2"/></svg>
+              </div>
+              <div class="vehicle-row__body">
+                <div class="vehicle-row__name">Toyota Camry &middot; White</div>
+                <div class="vehicle-row__plate">12 AB 345</div>
+                <div class="vehicle-row__tariffs">Economy &middot; Comfort &middot; Business</div>
+              </div>
+              <div class="vehicle-row__status vehicle-row__status--active">Active</div>
+            </div>
+
+            <div class="vehicle-row">
+              <div class="vehicle-row__thumb">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17h14M6 13l2-5h8l2 5"/><circle cx="7.5" cy="17" r="2"/><circle cx="16.5" cy="17" r="2"/></svg>
+              </div>
+              <div class="vehicle-row__body">
+                <div class="vehicle-row__name">Hyundai Sonata &middot; Grey</div>
+                <div class="vehicle-row__plate">04 KL 921</div>
+                <div class="vehicle-row__tariffs">Economy &middot; Comfort</div>
+              </div>
+              <div class="vehicle-row__status vehicle-row__status--inspect">Inspect</div>
+            </div>
+
+            <div class="vehicle-row vehicle-row--blocked">
+              <div class="vehicle-row__thumb">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17h14M6 13l2-5h8l2 5"/><circle cx="7.5" cy="17" r="2"/><circle cx="16.5" cy="17" r="2"/></svg>
+              </div>
+              <div class="vehicle-row__body">
+                <div class="vehicle-row__name">Renault Logan &middot; Blue</div>
+                <div class="vehicle-row__plate">27 ZH 008</div>
+                <div class="vehicle-row__tariffs">Economy</div>
+              </div>
+              <div class="vehicle-row__status vehicle-row__status--blocked">Blocked</div>
+            </div>
+
+            <div class="vehicle-row--add" style="margin-top: 14px;">
+              <div class="vehicle-row__thumb">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+              </div>
+              <div class="vehicle-row__body">
+                <div class="vehicle-row__name">Add a vehicle</div>
+                <div class="vehicle-row__sub">Brand, model, plate, docs &middot; typically 1&ndash;4 hours to approve</div>
+              </div>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--color-accent-interactive); flex-shrink: 0;"><polyline points="9 18 15 12 9 6"/></svg>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 10.1.D · LIGHT -->
+    <div class="stage">
+      <div class="stage-label"><span class="stage-label-num">10.1.D</span>Vehicle Picker · Light</div>
+      <div class="frame frame--light">
+        <div class="notch"></div>
+        <div class="status-bar">
+          <span class="status-bar__time">9:41</span>
+          <span class="status-bar__icons">
+            <svg width="18" height="10" viewBox="0 0 18 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx="1"/><rect x="5" y="4" width="3" height="6" rx="1"/><rect x="10" y="2" width="3" height="8" rx="1"/><rect x="15" y="0" width="3" height="10" rx="1"/></svg>
+            <svg width="16" height="12" viewBox="0 0 16 12" fill="currentColor"><path d="M8 11.2a1.2 1.2 0 1 0 0-2.4 1.2 1.2 0 0 0 0 2.4Zm3.4-3.6a4.8 4.8 0 0 0-6.8 0L3.4 6.4a6.5 6.5 0 0 1 9.2 0l-1.2 1.2ZM14 5l-1.2 1.2A7.6 7.6 0 0 0 8 4.4 7.6 7.6 0 0 0 3.2 6.2L2 5a9.3 9.3 0 0 1 12 0Z"/></svg>
+            <svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="0.5" y="0.5" width="22" height="11" rx="3" stroke="currentColor" opacity="0.4"/><rect x="2" y="2" width="18" height="8" rx="1.5" fill="currentColor"/><rect x="23" y="4" width="2" height="4" rx="1" fill="currentColor" opacity="0.4"/></svg>
+          </span>
+        </div>
+        <div class="app-bar">
+          <button class="icon-btn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+          <div class="app-bar__title">My vehicles</div>
+          <span style="width:44px"></span>
+        </div>
+
+        <div style="padding: 8px 16px; display: flex; flex-direction: column; height: calc(100% - 88px);">
+          <div class="vehicle-list">
+
+            <div class="vehicle-row vehicle-row--current">
+              <div class="vehicle-row__thumb">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17h14M6 13l2-5h8l2 5"/><circle cx="7.5" cy="17" r="2"/><circle cx="16.5" cy="17" r="2"/></svg>
+              </div>
+              <div class="vehicle-row__body">
+                <div class="vehicle-row__name">Toyota Camry &middot; White</div>
+                <div class="vehicle-row__plate">12 AB 345</div>
+                <div class="vehicle-row__tariffs">Economy &middot; Comfort &middot; Business</div>
+              </div>
+              <div class="vehicle-row__status vehicle-row__status--active">Active</div>
+            </div>
+
+            <div class="vehicle-row">
+              <div class="vehicle-row__thumb">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17h14M6 13l2-5h8l2 5"/><circle cx="7.5" cy="17" r="2"/><circle cx="16.5" cy="17" r="2"/></svg>
+              </div>
+              <div class="vehicle-row__body">
+                <div class="vehicle-row__name">Hyundai Sonata &middot; Grey</div>
+                <div class="vehicle-row__plate">04 KL 921</div>
+                <div class="vehicle-row__tariffs">Economy &middot; Comfort</div>
+              </div>
+              <div class="vehicle-row__status vehicle-row__status--inspect">Inspect</div>
+            </div>
+
+            <div class="vehicle-row vehicle-row--blocked">
+              <div class="vehicle-row__thumb">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17h14M6 13l2-5h8l2 5"/><circle cx="7.5" cy="17" r="2"/><circle cx="16.5" cy="17" r="2"/></svg>
+              </div>
+              <div class="vehicle-row__body">
+                <div class="vehicle-row__name">Renault Logan &middot; Blue</div>
+                <div class="vehicle-row__plate">27 ZH 008</div>
+                <div class="vehicle-row__tariffs">Economy</div>
+              </div>
+              <div class="vehicle-row__status vehicle-row__status--blocked">Blocked</div>
+            </div>
+
+            <div class="vehicle-row--add" style="margin-top: 14px;">
+              <div class="vehicle-row__thumb">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+              </div>
+              <div class="vehicle-row__body">
+                <div class="vehicle-row__name">Add a vehicle</div>
+                <div class="vehicle-row__sub">Brand, model, plate, docs &middot; typically 1&ndash;4 hours to approve</div>
+              </div>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--color-accent-interactive); flex-shrink: 0;"><polyline points="9 18 15 12 9 6"/></svg>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- SECTION 10.1.E — Add Vehicle · Basics (Step 1/3)                -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">10.1.E · NEW</span>
+    <h2 class="section-title">Add Vehicle &mdash; Basics</h2>
+    <p class="section-desc">Step 1 of 3. Brand, model, color, year, plate. One filled + one error field per the form-state rule. Continue disabled while the plate fails validation.</p>
+  </div>
+
+  <div class="frames-grid">
+
+    <!-- 10.1.E · DARK -->
+    <div class="stage">
+      <div class="stage-label"><span class="stage-label-num">10.1.E</span>Add Vehicle · Basics · Dark</div>
+      <div class="frame frame--dark">
+        <div class="notch"></div>
+        <div class="status-bar">
+          <span class="status-bar__time">9:41</span>
+          <span class="status-bar__icons">
+            <svg width="18" height="10" viewBox="0 0 18 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx="1"/><rect x="5" y="4" width="3" height="6" rx="1"/><rect x="10" y="2" width="3" height="8" rx="1"/><rect x="15" y="0" width="3" height="10" rx="1"/></svg>
+            <svg width="16" height="12" viewBox="0 0 16 12" fill="currentColor"><path d="M8 11.2a1.2 1.2 0 1 0 0-2.4 1.2 1.2 0 0 0 0 2.4Zm3.4-3.6a4.8 4.8 0 0 0-6.8 0L3.4 6.4a6.5 6.5 0 0 1 9.2 0l-1.2 1.2ZM14 5l-1.2 1.2A7.6 7.6 0 0 0 8 4.4 7.6 7.6 0 0 0 3.2 6.2L2 5a9.3 9.3 0 0 1 12 0Z"/></svg>
+            <svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="0.5" y="0.5" width="22" height="11" rx="3" stroke="currentColor" opacity="0.4"/><rect x="2" y="2" width="18" height="8" rx="1.5" fill="currentColor"/><rect x="23" y="4" width="2" height="4" rx="1" fill="currentColor" opacity="0.4"/></svg>
+          </span>
+        </div>
+        <div class="app-bar">
+          <button class="icon-btn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+          <div class="app-bar__title">Add vehicle</div>
+          <span style="width:44px"></span>
+        </div>
+
+        <div class="add-vehicle">
+          <div class="step-bar">
+            <div class="step-bar__pip step-bar__pip--current"></div>
+            <div class="step-bar__pip"></div>
+            <div class="step-bar__pip"></div>
+            <span class="step-bar__label">Step 1 / 3</span>
+          </div>
+
+          <div class="add-vehicle__eyebrow">Vehicle basics</div>
+          <div class="add-vehicle__title">Tell us about the car</div>
+
+          <div class="field">
+            <div class="field__label">Brand</div>
+            <div class="input input--select">
+              <span>Toyota</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+          </div>
+
+          <div class="field">
+            <div class="field__label">Model</div>
+            <div class="input input--select">
+              <span class="input__placeholder">Choose model</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+          </div>
+
+          <div class="field" style="display: flex; gap: 12px;">
+            <div style="flex: 1;">
+              <div class="field__label">Color</div>
+              <div class="input input--select">
+                <span class="input__placeholder">Pick</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+              </div>
+            </div>
+            <div style="flex: 1;">
+              <div class="field__label">Year</div>
+              <div class="input input--focused">
+                <span class="input__placeholder">e.g. 2022</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="field">
+            <div class="field__label">License plate</div>
+            <div class="input input--warning">
+              <span style="font-variant-numeric: tabular-nums; letter-spacing: 0.04em;">12 AB 34</span>
+            </div>
+            <div class="field__warning">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" style="flex-shrink: 0; margin-top: 2px;"><path d="M12 2 1 21h22L12 2zm0 6 7 12H5l7-12zm-1 4v4h2v-4h-2zm0 5v2h2v-2h-2z"/></svg>
+              <span>Plate must be 2 digits, 2 letters, 3 digits &mdash; e.g. 12&nbsp;AB&nbsp;345</span>
+            </div>
+          </div>
+
+          <div class="action-footer">
+            <button class="btn-primary btn-primary--full btn-primary--disabled">Continue</button>
+            <div class="action-footer__hint">Fix the plate format to continue</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 10.1.E · LIGHT -->
+    <div class="stage">
+      <div class="stage-label"><span class="stage-label-num">10.1.E</span>Add Vehicle · Basics · Light</div>
+      <div class="frame frame--light">
+        <div class="notch"></div>
+        <div class="status-bar">
+          <span class="status-bar__time">9:41</span>
+          <span class="status-bar__icons">
+            <svg width="18" height="10" viewBox="0 0 18 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx="1"/><rect x="5" y="4" width="3" height="6" rx="1"/><rect x="10" y="2" width="3" height="8" rx="1"/><rect x="15" y="0" width="3" height="10" rx="1"/></svg>
+            <svg width="16" height="12" viewBox="0 0 16 12" fill="currentColor"><path d="M8 11.2a1.2 1.2 0 1 0 0-2.4 1.2 1.2 0 0 0 0 2.4Zm3.4-3.6a4.8 4.8 0 0 0-6.8 0L3.4 6.4a6.5 6.5 0 0 1 9.2 0l-1.2 1.2ZM14 5l-1.2 1.2A7.6 7.6 0 0 0 8 4.4 7.6 7.6 0 0 0 3.2 6.2L2 5a9.3 9.3 0 0 1 12 0Z"/></svg>
+            <svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="0.5" y="0.5" width="22" height="11" rx="3" stroke="currentColor" opacity="0.4"/><rect x="2" y="2" width="18" height="8" rx="1.5" fill="currentColor"/><rect x="23" y="4" width="2" height="4" rx="1" fill="currentColor" opacity="0.4"/></svg>
+          </span>
+        </div>
+        <div class="app-bar">
+          <button class="icon-btn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+          <div class="app-bar__title">Add vehicle</div>
+          <span style="width:44px"></span>
+        </div>
+
+        <div class="add-vehicle">
+          <div class="step-bar">
+            <div class="step-bar__pip step-bar__pip--current"></div>
+            <div class="step-bar__pip"></div>
+            <div class="step-bar__pip"></div>
+            <span class="step-bar__label">Step 1 / 3</span>
+          </div>
+
+          <div class="add-vehicle__eyebrow">Vehicle basics</div>
+          <div class="add-vehicle__title">Tell us about the car</div>
+
+          <div class="field">
+            <div class="field__label">Brand</div>
+            <div class="input input--select">
+              <span>Toyota</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+          </div>
+
+          <div class="field">
+            <div class="field__label">Model</div>
+            <div class="input input--select">
+              <span class="input__placeholder">Choose model</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+          </div>
+
+          <div class="field" style="display: flex; gap: 12px;">
+            <div style="flex: 1;">
+              <div class="field__label">Color</div>
+              <div class="input input--select">
+                <span class="input__placeholder">Pick</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+              </div>
+            </div>
+            <div style="flex: 1;">
+              <div class="field__label">Year</div>
+              <div class="input input--focused">
+                <span class="input__placeholder">e.g. 2022</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="field">
+            <div class="field__label">License plate</div>
+            <div class="input input--warning">
+              <span style="font-variant-numeric: tabular-nums; letter-spacing: 0.04em;">12 AB 34</span>
+            </div>
+            <div class="field__warning">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" style="flex-shrink: 0; margin-top: 2px;"><path d="M12 2 1 21h22L12 2zm0 6 7 12H5l7-12zm-1 4v4h2v-4h-2zm0 5v2h2v-2h-2z"/></svg>
+              <span>Plate must be 2 digits, 2 letters, 3 digits &mdash; e.g. 12&nbsp;AB&nbsp;345</span>
+            </div>
+          </div>
+
+          <div class="action-footer">
+            <button class="btn-primary btn-primary--full btn-primary--disabled">Continue</button>
+            <div class="action-footer__hint">Fix the plate format to continue</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- SECTION 10.1.F — Add Vehicle · Documents (Step 2/3)             -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">10.1.F · NEW</span>
+    <h2 class="section-title">Add Vehicle &mdash; Documents</h2>
+    <p class="section-desc">Step 2 of 3. Registration certificate + insurance policy. One uploaded (Emerald check) + one empty (dashed tile) shows both states in a single screen.</p>
+  </div>
+
+  <div class="frames-grid">
+
+    <!-- 10.1.F · DARK -->
+    <div class="stage">
+      <div class="stage-label"><span class="stage-label-num">10.1.F</span>Add Vehicle · Documents · Dark</div>
+      <div class="frame frame--dark">
+        <div class="notch"></div>
+        <div class="status-bar">
+          <span class="status-bar__time">9:41</span>
+          <span class="status-bar__icons">
+            <svg width="18" height="10" viewBox="0 0 18 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx="1"/><rect x="5" y="4" width="3" height="6" rx="1"/><rect x="10" y="2" width="3" height="8" rx="1"/><rect x="15" y="0" width="3" height="10" rx="1"/></svg>
+            <svg width="16" height="12" viewBox="0 0 16 12" fill="currentColor"><path d="M8 11.2a1.2 1.2 0 1 0 0-2.4 1.2 1.2 0 0 0 0 2.4Zm3.4-3.6a4.8 4.8 0 0 0-6.8 0L3.4 6.4a6.5 6.5 0 0 1 9.2 0l-1.2 1.2ZM14 5l-1.2 1.2A7.6 7.6 0 0 0 8 4.4 7.6 7.6 0 0 0 3.2 6.2L2 5a9.3 9.3 0 0 1 12 0Z"/></svg>
+            <svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="0.5" y="0.5" width="22" height="11" rx="3" stroke="currentColor" opacity="0.4"/><rect x="2" y="2" width="18" height="8" rx="1.5" fill="currentColor"/><rect x="23" y="4" width="2" height="4" rx="1" fill="currentColor" opacity="0.4"/></svg>
+          </span>
+        </div>
+        <div class="app-bar">
+          <button class="icon-btn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+          <div class="app-bar__title">Add vehicle</div>
+          <span style="width:44px"></span>
+        </div>
+
+        <div class="add-vehicle">
+          <div class="step-bar">
+            <div class="step-bar__pip step-bar__pip--done"></div>
+            <div class="step-bar__pip step-bar__pip--current"></div>
+            <div class="step-bar__pip"></div>
+            <span class="step-bar__label">Step 2 / 3</span>
+          </div>
+
+          <div class="add-vehicle__eyebrow">Documents</div>
+          <div class="add-vehicle__title">Upload registration &amp; insurance</div>
+
+          <div class="doc-grid">
+            <div class="doc-tile doc-tile--uploaded">
+              <div class="doc-tile__icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+              <div class="doc-tile__label">Registration certificate</div>
+              <div class="doc-tile__meta doc-tile__meta--positive">registration.pdf &middot; 2.4 MB</div>
+            </div>
+            <div class="doc-tile doc-tile--empty">
+              <div class="doc-tile__icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="13" rx="2"/><circle cx="12" cy="13" r="3.5"/><path d="M8 6l2-3h4l2 3"/></svg>
+              </div>
+              <div class="doc-tile__label">Insurance policy</div>
+              <div class="doc-tile__meta">Tap to upload</div>
+            </div>
+          </div>
+
+          <div class="progress-hint">
+            <div class="progress-hint__dot">1/2</div>
+            <div class="progress-hint__text">One more document to go</div>
+          </div>
+
+          <div class="action-footer">
+            <button class="btn-primary btn-primary--full btn-primary--disabled">Continue</button>
+            <div class="action-footer__hint">Upload the insurance policy to continue</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 10.1.F · LIGHT -->
+    <div class="stage">
+      <div class="stage-label"><span class="stage-label-num">10.1.F</span>Add Vehicle · Documents · Light</div>
+      <div class="frame frame--light">
+        <div class="notch"></div>
+        <div class="status-bar">
+          <span class="status-bar__time">9:41</span>
+          <span class="status-bar__icons">
+            <svg width="18" height="10" viewBox="0 0 18 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx="1"/><rect x="5" y="4" width="3" height="6" rx="1"/><rect x="10" y="2" width="3" height="8" rx="1"/><rect x="15" y="0" width="3" height="8" rx="1"/></svg>
+            <svg width="16" height="12" viewBox="0 0 16 12" fill="currentColor"><path d="M8 11.2a1.2 1.2 0 1 0 0-2.4 1.2 1.2 0 0 0 0 2.4Zm3.4-3.6a4.8 4.8 0 0 0-6.8 0L3.4 6.4a6.5 6.5 0 0 1 9.2 0l-1.2 1.2ZM14 5l-1.2 1.2A7.6 7.6 0 0 0 8 4.4 7.6 7.6 0 0 0 3.2 6.2L2 5a9.3 9.3 0 0 1 12 0Z"/></svg>
+            <svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="0.5" y="0.5" width="22" height="11" rx="3" stroke="currentColor" opacity="0.4"/><rect x="2" y="2" width="18" height="8" rx="1.5" fill="currentColor"/><rect x="23" y="4" width="2" height="4" rx="1" fill="currentColor" opacity="0.4"/></svg>
+          </span>
+        </div>
+        <div class="app-bar">
+          <button class="icon-btn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+          <div class="app-bar__title">Add vehicle</div>
+          <span style="width:44px"></span>
+        </div>
+
+        <div class="add-vehicle">
+          <div class="step-bar">
+            <div class="step-bar__pip step-bar__pip--done"></div>
+            <div class="step-bar__pip step-bar__pip--current"></div>
+            <div class="step-bar__pip"></div>
+            <span class="step-bar__label">Step 2 / 3</span>
+          </div>
+
+          <div class="add-vehicle__eyebrow">Documents</div>
+          <div class="add-vehicle__title">Upload registration &amp; insurance</div>
+
+          <div class="doc-grid">
+            <div class="doc-tile doc-tile--uploaded">
+              <div class="doc-tile__icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+              <div class="doc-tile__label">Registration certificate</div>
+              <div class="doc-tile__meta doc-tile__meta--positive">registration.pdf &middot; 2.4 MB</div>
+            </div>
+            <div class="doc-tile doc-tile--empty">
+              <div class="doc-tile__icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="13" rx="2"/><circle cx="12" cy="13" r="3.5"/><path d="M8 6l2-3h4l2 3"/></svg>
+              </div>
+              <div class="doc-tile__label">Insurance policy</div>
+              <div class="doc-tile__meta">Tap to upload</div>
+            </div>
+          </div>
+
+          <div class="progress-hint">
+            <div class="progress-hint__dot">1/2</div>
+            <div class="progress-hint__text">One more document to go</div>
+          </div>
+
+          <div class="action-footer">
+            <button class="btn-primary btn-primary--full btn-primary--disabled">Continue</button>
+            <div class="action-footer__hint">Upload the insurance policy to continue</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- SECTION 10.1.G — Add Vehicle · Pending Review (Step 3/3)        -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">10.1.G · NEW</span>
+    <h2 class="section-title">Add Vehicle &mdash; Pending Review</h2>
+    <p class="section-desc">Submitted. Vehicle goes into moderation; reappears in the picker with the &ldquo;Inspect&rdquo; status once approved (per PRD &sect; 10.1) and runs through the existing photo-control flow.</p>
+  </div>
+
+  <div class="frames-grid">
+
+    <!-- 10.1.G · DARK -->
+    <div class="stage">
+      <div class="stage-label"><span class="stage-label-num">10.1.G</span>Pending Review · Dark</div>
+      <div class="frame frame--dark">
+        <div class="notch"></div>
+        <div class="status-bar">
+          <span class="status-bar__time">9:41</span>
+          <span class="status-bar__icons">
+            <svg width="18" height="10" viewBox="0 0 18 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx="1"/><rect x="5" y="4" width="3" height="6" rx="1"/><rect x="10" y="2" width="3" height="8" rx="1"/><rect x="15" y="0" width="3" height="10" rx="1"/></svg>
+            <svg width="16" height="12" viewBox="0 0 16 12" fill="currentColor"><path d="M8 11.2a1.2 1.2 0 1 0 0-2.4 1.2 1.2 0 0 0 0 2.4Zm3.4-3.6a4.8 4.8 0 0 0-6.8 0L3.4 6.4a6.5 6.5 0 0 1 9.2 0l-1.2 1.2ZM14 5l-1.2 1.2A7.6 7.6 0 0 0 8 4.4 7.6 7.6 0 0 0 3.2 6.2L2 5a9.3 9.3 0 0 1 12 0Z"/></svg>
+            <svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="0.5" y="0.5" width="22" height="11" rx="3" stroke="currentColor" opacity="0.4"/><rect x="2" y="2" width="18" height="8" rx="1.5" fill="currentColor"/><rect x="23" y="4" width="2" height="4" rx="1" fill="currentColor" opacity="0.4"/></svg>
+          </span>
+        </div>
+        <div class="app-bar">
+          <span style="width:44px"></span>
+          <div class="app-bar__title">Add vehicle</div>
+          <span style="width:44px"></span>
+        </div>
+
+        <div class="pending">
+          <div class="step-bar">
+            <div class="step-bar__pip step-bar__pip--done"></div>
+            <div class="step-bar__pip step-bar__pip--done"></div>
+            <div class="step-bar__pip step-bar__pip--done"></div>
+            <span class="step-bar__label">Step 3 / 3</span>
+          </div>
+
+          <div class="pending__hero">
+            <div class="pending__icon">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div class="pending__title">Sent for review</div>
+            <div class="pending__desc">We&rsquo;ll notify you when it&rsquo;s ready. Most vehicles are approved in 1&ndash;4 hours during business hours.</div>
+          </div>
+
+          <div class="pending__card">
+            <div class="pending__card-name">Toyota Camry &middot; White &middot; 2022</div>
+            <div class="pending__card-meta">12 AB 345 &middot; registration.pdf, insurance.pdf</div>
+          </div>
+
+          <div class="action-footer">
+            <button class="btn-primary btn-primary--full">Back to my vehicles</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 10.1.G · LIGHT -->
+    <div class="stage">
+      <div class="stage-label"><span class="stage-label-num">10.1.G</span>Pending Review · Light</div>
+      <div class="frame frame--light">
+        <div class="notch"></div>
+        <div class="status-bar">
+          <span class="status-bar__time">9:41</span>
+          <span class="status-bar__icons">
+            <svg width="18" height="10" viewBox="0 0 18 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx="1"/><rect x="5" y="4" width="3" height="6" rx="1"/><rect x="10" y="2" width="3" height="8" rx="1"/><rect x="15" y="0" width="3" height="10" rx="1"/></svg>
+            <svg width="16" height="12" viewBox="0 0 16 12" fill="currentColor"><path d="M8 11.2a1.2 1.2 0 1 0 0-2.4 1.2 1.2 0 0 0 0 2.4Zm3.4-3.6a4.8 4.8 0 0 0-6.8 0L3.4 6.4a6.5 6.5 0 0 1 9.2 0l-1.2 1.2ZM14 5l-1.2 1.2A7.6 7.6 0 0 0 8 4.4 7.6 7.6 0 0 0 3.2 6.2L2 5a9.3 9.3 0 0 1 12 0Z"/></svg>
+            <svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="0.5" y="0.5" width="22" height="11" rx="3" stroke="currentColor" opacity="0.4"/><rect x="2" y="2" width="18" height="8" rx="1.5" fill="currentColor"/><rect x="23" y="4" width="2" height="4" rx="1" fill="currentColor" opacity="0.4"/></svg>
+          </span>
+        </div>
+        <div class="app-bar">
+          <span style="width:44px"></span>
+          <div class="app-bar__title">Add vehicle</div>
+          <span style="width:44px"></span>
+        </div>
+
+        <div class="pending">
+          <div class="step-bar">
+            <div class="step-bar__pip step-bar__pip--done"></div>
+            <div class="step-bar__pip step-bar__pip--done"></div>
+            <div class="step-bar__pip step-bar__pip--done"></div>
+            <span class="step-bar__label">Step 3 / 3</span>
+          </div>
+
+          <div class="pending__hero">
+            <div class="pending__icon">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div class="pending__title">Sent for review</div>
+            <div class="pending__desc">We&rsquo;ll notify you when it&rsquo;s ready. Most vehicles are approved in 1&ndash;4 hours during business hours.</div>
+          </div>
+
+          <div class="pending__card">
+            <div class="pending__card-name">Toyota Camry &middot; White &middot; 2022</div>
+            <div class="pending__card-meta">12 AB 345 &middot; registration.pdf, insurance.pdf</div>
+          </div>
+
+          <div class="action-footer">
+            <button class="btn-primary btn-primary--full">Back to my vehicles</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- SECTION 8.C2 — Settings · Driving group (entry point)           -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">8.C2 · NEW</span>
+    <h2 class="section-title">Settings &mdash; Driving group</h2>
+    <p class="section-desc">New &ldquo;Driving&rdquo; group at the top of Settings. Two rows: &ldquo;My vehicles&rdquo; opens the picker (10.1.D); &ldquo;Active tariffs&rdquo; opens the bottom sheet (2.E). General group shown below for context.</p>
+  </div>
+
+  <div class="frames-grid">
+
+    <!-- 8.C2 · DARK -->
+    <div class="stage">
+      <div class="stage-label"><span class="stage-label-num">8.C2</span>Settings &middot; Driving &middot; Dark</div>
+      <div class="frame frame--dark">
+        <div class="notch"></div>
+        <div class="status-bar">
+          <span class="status-bar__time">9:41</span>
+          <span class="status-bar__icons">
+            <svg width="18" height="10" viewBox="0 0 18 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx="1"/><rect x="5" y="4" width="3" height="6" rx="1"/><rect x="10" y="2" width="3" height="8" rx="1"/><rect x="15" y="0" width="3" height="10" rx="1"/></svg>
+            <svg width="16" height="12" viewBox="0 0 16 12" fill="currentColor"><path d="M8 11.2a1.2 1.2 0 1 0 0-2.4 1.2 1.2 0 0 0 0 2.4Zm3.4-3.6a4.8 4.8 0 0 0-6.8 0L3.4 6.4a6.5 6.5 0 0 1 9.2 0l-1.2 1.2ZM14 5l-1.2 1.2A7.6 7.6 0 0 0 8 4.4 7.6 7.6 0 0 0 3.2 6.2L2 5a9.3 9.3 0 0 1 12 0Z"/></svg>
+            <svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="0.5" y="0.5" width="22" height="11" rx="3" stroke="currentColor" opacity="0.4"/><rect x="2" y="2" width="18" height="8" rx="1.5" fill="currentColor"/><rect x="23" y="4" width="2" height="4" rx="1" fill="currentColor" opacity="0.4"/></svg>
+          </span>
+        </div>
+        <div class="app-bar">
+          <button class="icon-btn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+          <div class="app-bar__title">Settings</div>
+          <span style="width:44px"></span>
+        </div>
+
+        <div class="settings-scroll">
+          <div class="menu-group-label">Driving</div>
+          <div class="menu-group">
+            <div class="menu-item">
+              <div class="menu-item__icon menu-item__icon--accent">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17h14M6 13l2-5h8l2 5"/><circle cx="7.5" cy="17" r="2"/><circle cx="16.5" cy="17" r="2"/></svg>
+              </div>
+              <div class="menu-item__body">
+                <div class="menu-item__name">My vehicles</div>
+                <div class="menu-item__meta">Toyota Camry &middot; 12 AB 345 &middot; +2 more</div>
+              </div>
+              <span class="menu-item__chevron">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+              </span>
+            </div>
+            <div class="menu-item">
+              <div class="menu-item__icon menu-item__icon--accent">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41 11 22.99 2 13.99V4h10l8.59 9.41Z"/><circle cx="7" cy="9" r="2"/></svg>
+              </div>
+              <div class="menu-item__body">
+                <div class="menu-item__name">Active tariffs</div>
+                <div class="menu-item__meta">Economy &middot; Comfort &middot; for Toyota Camry</div>
+              </div>
+              <span class="menu-item__chevron">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+              </span>
+            </div>
+            <div class="menu-item">
+              <div class="menu-item__icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              </div>
+              <div class="menu-item__body">
+                <div class="menu-item__name">Documents</div>
+              </div>
+              <span class="menu-item__badge menu-item__badge--warn">1 expiring</span>
+              <span class="menu-item__chevron" style="margin-left: 8px;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+              </span>
+            </div>
+          </div>
+
+          <div class="menu-group-label">General</div>
+          <div class="menu-group">
+            <div class="menu-item">
+              <div class="menu-item__icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 0 20M12 2a15.3 15.3 0 0 0 0 20"/></svg>
+              </div>
+              <div class="menu-item__body">
+                <div class="menu-item__name">Language</div>
+              </div>
+              <span class="settings-row__value">English</span>
+              <span class="menu-item__chevron" style="margin-left: 8px;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+              </span>
+            </div>
+            <div class="menu-item">
+              <div class="menu-item__icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/></svg>
+              </div>
+              <div class="menu-item__body">
+                <div class="menu-item__name">Theme</div>
+              </div>
+              <span class="settings-row__value">System</span>
+              <span class="menu-item__chevron" style="margin-left: 8px;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 8.C2 · LIGHT -->
+    <div class="stage">
+      <div class="stage-label"><span class="stage-label-num">8.C2</span>Settings &middot; Driving &middot; Light</div>
+      <div class="frame frame--light">
+        <div class="notch"></div>
+        <div class="status-bar">
+          <span class="status-bar__time">9:41</span>
+          <span class="status-bar__icons">
+            <svg width="18" height="10" viewBox="0 0 18 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx="1"/><rect x="5" y="4" width="3" height="6" rx="1"/><rect x="10" y="2" width="3" height="8" rx="1"/><rect x="15" y="0" width="3" height="10" rx="1"/></svg>
+            <svg width="16" height="12" viewBox="0 0 16 12" fill="currentColor"><path d="M8 11.2a1.2 1.2 0 1 0 0-2.4 1.2 1.2 0 0 0 0 2.4Zm3.4-3.6a4.8 4.8 0 0 0-6.8 0L3.4 6.4a6.5 6.5 0 0 1 9.2 0l-1.2 1.2ZM14 5l-1.2 1.2A7.6 7.6 0 0 0 8 4.4 7.6 7.6 0 0 0 3.2 6.2L2 5a9.3 9.3 0 0 1 12 0Z"/></svg>
+            <svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="0.5" y="0.5" width="22" height="11" rx="3" stroke="currentColor" opacity="0.4"/><rect x="2" y="2" width="18" height="8" rx="1.5" fill="currentColor"/><rect x="23" y="4" width="2" height="4" rx="1" fill="currentColor" opacity="0.4"/></svg>
+          </span>
+        </div>
+        <div class="app-bar">
+          <button class="icon-btn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+          <div class="app-bar__title">Settings</div>
+          <span style="width:44px"></span>
+        </div>
+
+        <div class="settings-scroll">
+          <div class="menu-group-label">Driving</div>
+          <div class="menu-group">
+            <div class="menu-item">
+              <div class="menu-item__icon menu-item__icon--accent">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17h14M6 13l2-5h8l2 5"/><circle cx="7.5" cy="17" r="2"/><circle cx="16.5" cy="17" r="2"/></svg>
+              </div>
+              <div class="menu-item__body">
+                <div class="menu-item__name">My vehicles</div>
+                <div class="menu-item__meta">Toyota Camry &middot; 12 AB 345 &middot; +2 more</div>
+              </div>
+              <span class="menu-item__chevron">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+              </span>
+            </div>
+            <div class="menu-item">
+              <div class="menu-item__icon menu-item__icon--accent">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41 11 22.99 2 13.99V4h10l8.59 9.41Z"/><circle cx="7" cy="9" r="2"/></svg>
+              </div>
+              <div class="menu-item__body">
+                <div class="menu-item__name">Active tariffs</div>
+                <div class="menu-item__meta">Economy &middot; Comfort &middot; for Toyota Camry</div>
+              </div>
+              <span class="menu-item__chevron">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+              </span>
+            </div>
+            <div class="menu-item">
+              <div class="menu-item__icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              </div>
+              <div class="menu-item__body">
+                <div class="menu-item__name">Documents</div>
+              </div>
+              <span class="menu-item__badge menu-item__badge--warn">1 expiring</span>
+              <span class="menu-item__chevron" style="margin-left: 8px;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+              </span>
+            </div>
+          </div>
+
+          <div class="menu-group-label">General</div>
+          <div class="menu-group">
+            <div class="menu-item">
+              <div class="menu-item__icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 0 20M12 2a15.3 15.3 0 0 0 0 20"/></svg>
+              </div>
+              <div class="menu-item__body">
+                <div class="menu-item__name">Language</div>
+              </div>
+              <span class="settings-row__value">English</span>
+              <span class="menu-item__chevron" style="margin-left: 8px;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+              </span>
+            </div>
+            <div class="menu-item">
+              <div class="menu-item__icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/></svg>
+              </div>
+              <div class="menu-item__body">
+                <div class="menu-item__name">Theme</div>
+              </div>
+              <span class="settings-row__value">System</span>
+              <span class="menu-item__chevron" style="margin-left: 8px;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<script>
+  document.querySelectorAll('.theme-toggle button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.theme-toggle button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.body.classList.toggle('theme-light', btn.dataset.theme === 'light');
+      document.body.classList.toggle('theme-dark', btn.dataset.theme === 'dark');
+    });
+  });
+</script>
+
+</body>
+</html>
