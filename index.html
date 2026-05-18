@@ -1037,10 +1037,15 @@
   }
   .car-sheet__text {
     display: flex;
-    align-items: baseline;
-    gap: 8px;
+    flex-direction: column;
+    gap: 1px;
     flex: 1;
     min-width: 0;
+  }
+  .car-sheet__line1 {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
   }
   .car-sheet__name {
     font-size: 13px;
@@ -1052,6 +1057,31 @@
     color: var(--color-text-secondary);
     font-variant-numeric: tabular-nums;
     letter-spacing: 0.04em;
+  }
+  .car-sheet__tariffs {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: var(--color-accent-interactive);
+    font-weight: 600;
+    line-height: 15px;
+  }
+  .car-sheet__tariffs-icon { color: var(--color-accent-interactive); display: flex; }
+  .car-sheet__tariffs-list { color: var(--color-accent-interactive); }
+  .car-sheet__tariffs-count {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--color-accent-interactive);
+    background: rgba(71, 159, 250, 0.14);
+    padding: 1px 6px;
+    border-radius: 999px;
+    font-variant-numeric: tabular-nums;
+    line-height: 13px;
+  }
+  .frame--light .car-sheet__tariffs-count,
+  body.theme-light .car-sheet__tariffs-count {
+    background: rgba(21, 101, 192, 0.10);
   }
   .car-sheet__chevron {
     color: var(--color-text-tertiary);
@@ -1508,19 +1538,27 @@
           </button>
 
           <!-- Combined car + tariff sheet — tariff chip on the right opens 2.E -->
-          <div class="car-sheet">
+          <!-- Whole row opens 2.E (tariff picker modal) -->
+          <div class="car-sheet" role="button" aria-label="Change active tariffs">
             <div class="car-sheet__icon">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17h14M6 13l2-5h8l2 5"/><circle cx="7.5" cy="17" r="2"/><circle cx="16.5" cy="17" r="2"/></svg>
             </div>
             <div class="car-sheet__text">
-              <span class="car-sheet__name">Toyota Camry</span>
-              <span class="car-sheet__plate">777 AB 01</span>
+              <div class="car-sheet__line1">
+                <span class="car-sheet__name">Toyota Camry</span>
+                <span class="car-sheet__plate">777 AB 01</span>
+              </div>
+              <div class="car-sheet__tariffs">
+                <span class="car-sheet__tariffs-icon">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41 11 22.99 2 13.99V4h10l8.59 9.41Z"/><circle cx="7" cy="9" r="1.5"/></svg>
+                </span>
+                <span class="car-sheet__tariffs-list">Economy &middot; Comfort</span>
+                <span class="car-sheet__tariffs-count">2 / 4</span>
+              </div>
             </div>
-            <button class="tariff-chip" aria-label="Change active tariffs">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41 11 22.99 2 13.99V4h10l8.59 9.41Z"/><circle cx="7" cy="9" r="1.5"/></svg>
-              <span class="tariff-chip__label">Tariffs</span>
-              <span class="tariff-chip__count">2 / 4</span>
-            </button>
+            <span class="car-sheet__chevron">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+            </span>
           </div>
 
           <!-- Bottom tab bar -->
@@ -1594,19 +1632,27 @@
             <span class="go-online__hint">Hold to start</span>
           </button>
 
-          <div class="car-sheet">
+          <!-- Whole row opens 2.E (tariff picker modal) -->
+          <div class="car-sheet" role="button" aria-label="Change active tariffs">
             <div class="car-sheet__icon">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17h14M6 13l2-5h8l2 5"/><circle cx="7.5" cy="17" r="2"/><circle cx="16.5" cy="17" r="2"/></svg>
             </div>
             <div class="car-sheet__text">
-              <span class="car-sheet__name">Toyota Camry</span>
-              <span class="car-sheet__plate">777 AB 01</span>
+              <div class="car-sheet__line1">
+                <span class="car-sheet__name">Toyota Camry</span>
+                <span class="car-sheet__plate">777 AB 01</span>
+              </div>
+              <div class="car-sheet__tariffs">
+                <span class="car-sheet__tariffs-icon">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41 11 22.99 2 13.99V4h10l8.59 9.41Z"/><circle cx="7" cy="9" r="1.5"/></svg>
+                </span>
+                <span class="car-sheet__tariffs-list">Economy &middot; Comfort</span>
+                <span class="car-sheet__tariffs-count">2 / 4</span>
+              </div>
             </div>
-            <button class="tariff-chip" aria-label="Change active tariffs">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41 11 22.99 2 13.99V4h10l8.59 9.41Z"/><circle cx="7" cy="9" r="1.5"/></svg>
-              <span class="tariff-chip__label">Tariffs</span>
-              <span class="tariff-chip__count">2 / 4</span>
-            </button>
+            <span class="car-sheet__chevron">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+            </span>
           </div>
 
           <div class="tab-bar-main">
