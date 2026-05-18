@@ -1059,33 +1059,46 @@
     display: flex;
     align-items: center;
   }
-  /* Tariff sheet — sister of car-sheet, sits directly above it */
-  .tariff-sheet {
-    bottom: 144px;
-  }
-  .tariff-sheet .car-sheet__icon {
+  /* Tariff chip — lives INSIDE .car-sheet on the right, single-row pattern */
+  .tariff-chip {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 8px 6px 10px;
+    margin-left: auto;
     background: rgba(71, 159, 250, 0.10);
+    border: 1px solid rgba(71, 159, 250, 0.22);
+    border-radius: 999px;
     color: var(--color-accent-interactive);
+    flex-shrink: 0;
+    cursor: pointer;
   }
-  .frame--light .tariff-sheet .car-sheet__icon,
-  body.theme-light .tariff-sheet .car-sheet__icon {
+  .frame--light .tariff-chip,
+  body.theme-light .tariff-chip {
     background: rgba(21, 101, 192, 0.08);
+    border-color: rgba(21, 101, 192, 0.22);
   }
-  .tariff-sheet__count {
+  .tariff-chip__label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    line-height: 14px;
+  }
+  .tariff-chip__count {
     font-size: 10px;
     font-weight: 700;
-    color: var(--color-accent-interactive);
-    background: rgba(71,159,250,0.10);
+    background: rgba(71, 159, 250, 0.18);
+    padding: 2px 6px;
     border-radius: 999px;
-    padding: 3px 7px;
-    letter-spacing: 0.04em;
-    margin-left: auto;
-    flex-shrink: 0;
+    font-variant-numeric: tabular-nums;
+    line-height: 13px;
   }
-  .frame--light .tariff-sheet__count,
-  body.theme-light .tariff-sheet__count {
-    background: rgba(21,101,192,0.08);
+  .frame--light .tariff-chip__count,
+  body.theme-light .tariff-chip__count {
+    background: rgba(21, 101, 192, 0.14);
   }
+  /* Hide the standalone tariff-sheet (replaced by chip-in-car-sheet) */
+  .car-sheet.tariff-sheet { display: none; }
 
   /* Go Online — Emerald primary CTA */
   .go-online {
@@ -1494,22 +1507,7 @@
             <span class="go-online__hint">Hold to start</span>
           </button>
 
-          <!-- Tariff sheet — NEW entry point, sits above car-sheet -->
-          <div class="car-sheet tariff-sheet">
-            <div class="car-sheet__icon">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41 11 22.99 2 13.99V4h10l8.59 9.41Z"/><circle cx="7" cy="9" r="2"/></svg>
-            </div>
-            <div class="car-sheet__text">
-              <span class="car-sheet__name">Economy &middot; Comfort</span>
-              <span class="car-sheet__plate">2 active</span>
-            </div>
-            <span class="tariff-sheet__count">2 / 4</span>
-            <span class="car-sheet__chevron">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-            </span>
-          </div>
-
-          <!-- Car sheet (existing pattern) -->
+          <!-- Combined car + tariff sheet — tariff chip on the right opens 2.E -->
           <div class="car-sheet">
             <div class="car-sheet__icon">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17h14M6 13l2-5h8l2 5"/><circle cx="7.5" cy="17" r="2"/><circle cx="16.5" cy="17" r="2"/></svg>
@@ -1518,9 +1516,11 @@
               <span class="car-sheet__name">Toyota Camry</span>
               <span class="car-sheet__plate">777 AB 01</span>
             </div>
-            <span class="car-sheet__chevron">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-            </span>
+            <button class="tariff-chip" aria-label="Change active tariffs">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41 11 22.99 2 13.99V4h10l8.59 9.41Z"/><circle cx="7" cy="9" r="1.5"/></svg>
+              <span class="tariff-chip__label">Tariffs</span>
+              <span class="tariff-chip__count">2 / 4</span>
+            </button>
           </div>
 
           <!-- Bottom tab bar -->
