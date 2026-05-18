@@ -507,43 +507,32 @@
     border-color: rgba(198,90,31,0.30);
   }
 
-  /* ═══════════════════════ DRIVER MAP (background only) ═══════════════════════ */
+  /* ═══════════════════════ DRIVER MAP (background — matches app.html) ═══════════════════════ */
   .driver-map {
     position: absolute;
     inset: 0;
     background-color: var(--color-bg);
+    background-image: url('map-dark.png');
+    background-size: cover;
+    background-position: center;
     overflow: hidden;
     z-index: 0;
   }
-  /* Subtle road suggestion using gradients (no external image dependency) */
-  .driver-map::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background:
-      linear-gradient(118deg, transparent 38%, rgba(255,255,255,0.04) 38%, rgba(255,255,255,0.04) 40%, transparent 40%),
-      linear-gradient(82deg, transparent 58%, rgba(255,255,255,0.04) 58%, rgba(255,255,255,0.04) 60%, transparent 60%),
-      linear-gradient(180deg, var(--color-bg), var(--color-surface) 70%);
-    z-index: 0;
-  }
-  .frame--light .driver-map::before,
-  body.theme-light .driver-map::before {
-    background:
-      linear-gradient(118deg, transparent 38%, rgba(15,23,42,0.05) 38%, rgba(15,23,42,0.05) 40%, transparent 40%),
-      linear-gradient(82deg, transparent 58%, rgba(15,23,42,0.05) 58%, rgba(15,23,42,0.05) 60%, transparent 60%),
-      linear-gradient(180deg, var(--color-bg), var(--color-surface-raised) 70%);
+  .frame--light .driver-map,
+  body.theme-light .driver-map {
+    background-image: url('map-light.png');
   }
   .driver-map::after {
     content: '';
     position: absolute;
     inset: 0;
-    background: radial-gradient(120% 80% at 50% 40%, transparent 55%, rgba(0, 0, 0, 0.45));
+    background: radial-gradient(120% 80% at 50% 40%, transparent 55%, rgba(0, 0, 0, 0.32));
     pointer-events: none;
     z-index: 1;
   }
   .frame--light .driver-map::after,
   body.theme-light .driver-map::after {
-    background: radial-gradient(120% 80% at 50% 40%, transparent 55%, rgba(15, 23, 42, 0.10));
+    background: radial-gradient(120% 80% at 50% 40%, transparent 55%, rgba(15, 23, 42, 0.06));
   }
   /* Scrim under sheet — heavier so the sheet reads as primary */
   .sheet-scrim {
@@ -915,174 +904,316 @@
     font-weight: 700;
   }
 
-  /* ═══════════════════════ MAIN OFFLINE — SLIM STATS + CAR/TARIFF SHEETS ═══════════════════════ */
-  .main-offline {
-    position: absolute;
-    inset: 44px 0 0 0;
+  /* ═══════════════════════ MAIN OFFLINE — ported from app.html ═══════════════════════ */
+  .main-screen {
+    height: calc(100% - 44px);
     display: flex;
     flex-direction: column;
-    padding: 8px 16px 16px;
-  }
-  .stats-row {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 12px;
-  }
-  .stat-tile {
-    flex: 1;
-    background: var(--color-surface);
-    border: 1px solid var(--color-hairline);
-    border-radius: 14px;
-    padding: 12px 12px 14px;
-  }
-  .stat-tile__label {
-    font-size: 10px;
-    font-weight: 700;
-    color: var(--color-text-tertiary);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    line-height: 13px;
-  }
-  .stat-tile__value {
-    font-size: 18px;
-    font-weight: 700;
-    color: var(--color-text);
-    letter-spacing: -0.01em;
-    margin-top: 4px;
-    line-height: 22px;
-  }
-  .stat-tile__sub {
-    font-size: 11px;
-    color: var(--color-text-secondary);
-    margin-top: 2px;
-  }
-  .main-offline__map {
-    flex: 1;
-    border-radius: 18px;
-    background: var(--color-surface);
-    border: 1px solid var(--color-hairline);
     position: relative;
+    background: var(--color-bg);
     overflow: hidden;
-    margin-bottom: 12px;
   }
-  .main-offline__map::before {
+  .stats-header {
+    padding: 6px 16px 10px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1.4fr;
+    gap: 8px;
+    background: transparent;
+    z-index: 4;
+    position: relative;
+  }
+  .stats-header::before {
     content: '';
     position: absolute;
-    inset: 0;
-    background:
-      linear-gradient(118deg, transparent 38%, rgba(255,255,255,0.04) 38%, rgba(255,255,255,0.04) 40%, transparent 40%),
-      linear-gradient(82deg, transparent 58%, rgba(255,255,255,0.04) 58%, rgba(255,255,255,0.04) 60%, transparent 60%),
-      linear-gradient(180deg, var(--color-surface), var(--color-bg) 80%);
+    top: 0; left: 0; right: 0; bottom: -48px;
+    background: linear-gradient(to bottom, var(--color-bg) 50%, transparent);
+    pointer-events: none;
+    z-index: -1;
   }
-  .frame--light .main-offline__map::before,
-  body.theme-light .main-offline__map::before {
-    background:
-      linear-gradient(118deg, transparent 38%, rgba(15,23,42,0.05) 38%, rgba(15,23,42,0.05) 40%, transparent 40%),
-      linear-gradient(82deg, transparent 58%, rgba(15,23,42,0.05) 58%, rgba(15,23,42,0.05) 60%, transparent 60%),
-      linear-gradient(180deg, var(--color-surface), var(--color-bg) 80%);
-  }
-  .main-offline__map-pin {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    width: 16px;
-    height: 16px;
-    margin: -8px 0 0 -8px;
-    border-radius: 999px;
-    background: var(--color-accent-interactive);
-    box-shadow: 0 0 0 4px rgba(71,159,250,0.20), 0 0 0 12px rgba(71,159,250,0.08);
-  }
-  .frame--light .main-offline__map-pin,
-  body.theme-light .main-offline__map-pin {
-    box-shadow: 0 0 0 4px rgba(21,101,192,0.16), 0 0 0 12px rgba(21,101,192,0.06);
-  }
-
-  /* Compact sheet (mirrors app.html .car-sheet — used for car + tariff entry rows) */
-  .compact-sheet {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 14px;
+  .stat-block {
     background: var(--color-surface);
+    background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent 55%);
     border: 1px solid var(--color-hairline);
-    border-radius: 16px;
-    cursor: pointer;
-    margin-bottom: 8px;
-  }
-  .compact-sheet__icon {
-    width: 36px;
-    height: 36px;
-    border-radius: 10px;
-    background: var(--color-surface-raised);
-    color: var(--color-text-secondary);
+    border-radius: 14px;
+    padding: 10px 12px;
     display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
+    flex-direction: column;
+    gap: 1px;
+    position: relative;
+    overflow: hidden;
   }
-  .compact-sheet__icon--accent {
-    background: rgba(71,159,250,0.10);
-    color: var(--color-accent-interactive);
+  .frame--light .stat-block,
+  body.theme-light .stat-block {
+    background-image: linear-gradient(180deg, rgba(15, 23, 42, 0.04), transparent 50%);
   }
-  .frame--light .compact-sheet__icon--accent,
-  body.theme-light .compact-sheet__icon--accent {
-    background: rgba(21,101,192,0.08);
-  }
-  .compact-sheet__body { flex: 1; min-width: 0; }
-  .compact-sheet__eyebrow {
+  .stat-block__label {
     font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.08em;
+    font-weight: 600;
+    letter-spacing: 0.10em;
     text-transform: uppercase;
     color: var(--color-text-tertiary);
     line-height: 13px;
   }
-  .compact-sheet__name {
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--color-text);
-    line-height: 18px;
-  }
-  .compact-sheet__sub {
-    font-size: 12px;
-    color: var(--color-text-secondary);
-    margin-top: 1px;
-    line-height: 16px;
-  }
-  .compact-sheet__chevron {
-    color: var(--color-text-tertiary);
-    flex-shrink: 0;
-  }
-
-  /* Premium "Go online" CTA (offline state) */
-  .go-online-cta {
-    height: 64px;
-    border-radius: 999px;
-    background: var(--gradient-warn, linear-gradient(135deg, #ff9670 0%, #d97550 100%));
-    color: #ffffff;
-    border: 0;
-    font-family: inherit;
-    font-size: 17px;
+  .stat-block__value {
+    font-size: 16px;
     font-weight: 700;
     letter-spacing: -0.01em;
+    color: var(--color-text);
+    font-variant-numeric: tabular-nums;
+    line-height: 20px;
+  }
+  .stat-block__sub {
+    font-size: 10px;
+    color: var(--color-text-secondary);
+    margin-top: 1px;
+  }
+  .stat-block__progress {
+    height: 4px;
+    background: var(--color-surface-raised);
+    border-radius: 999px;
+    margin-top: 6px;
+    overflow: hidden;
+  }
+  .stat-block__progress-fill {
+    height: 100%;
+    background: var(--gradient-warn, linear-gradient(135deg, #ff9670 0%, #d97550 100%));
+    border-radius: 999px;
+  }
+
+  /* Map FAB buttons (top-left controls) */
+  .map-fab {
+    position: absolute;
+    width: 36px;
+    height: 36px;
+    border-radius: 999px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-hairline);
+    color: var(--color-text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 3;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.30);
+  }
+  .frame--light .map-fab,
+  body.theme-light .map-fab {
+    box-shadow: 0 2px 6px rgba(15, 23, 42, 0.08);
+  }
+  .map-fab--locate { top: 124px; left: 16px; color: var(--color-accent-interactive); }
+  .map-fab--layers { top: 124px; left: 60px; }
+
+  /* Car sheet + tariff sheet — stacked pair above the tab bar */
+  .car-sheet {
+    position: absolute;
+    bottom: 88px;
+    left: 12px;
+    right: 12px;
+    z-index: 9;
+    background: var(--color-surface);
+    border: 1px solid var(--color-hairline);
+    border-radius: 18px;
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.32);
+    cursor: pointer;
+  }
+  .frame--light .car-sheet,
+  body.theme-light .car-sheet {
+    box-shadow: 0 6px 16px rgba(15, 23, 42, 0.08);
+  }
+  .car-sheet__icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: var(--color-surface-raised);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-accent-interactive);
+    flex-shrink: 0;
+  }
+  .car-sheet__text {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    flex: 1;
+    min-width: 0;
+  }
+  .car-sheet__name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-text);
+  }
+  .car-sheet__plate {
+    font-size: 12px;
+    color: var(--color-text-secondary);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.04em;
+  }
+  .car-sheet__chevron {
+    color: var(--color-text-tertiary);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+  }
+  /* Tariff sheet — sister of car-sheet, sits directly above it */
+  .tariff-sheet {
+    bottom: 144px;
+  }
+  .tariff-sheet .car-sheet__icon {
+    background: rgba(71, 159, 250, 0.10);
+    color: var(--color-accent-interactive);
+  }
+  .frame--light .tariff-sheet .car-sheet__icon,
+  body.theme-light .tariff-sheet .car-sheet__icon {
+    background: rgba(21, 101, 192, 0.08);
+  }
+  .tariff-sheet__count {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--color-accent-interactive);
+    background: rgba(71,159,250,0.10);
+    border-radius: 999px;
+    padding: 3px 7px;
+    letter-spacing: 0.04em;
+    margin-left: auto;
+    flex-shrink: 0;
+  }
+  .frame--light .tariff-sheet__count,
+  body.theme-light .tariff-sheet__count {
+    background: rgba(21,101,192,0.08);
+  }
+
+  /* Go Online — Emerald primary CTA */
+  .go-online {
+    position: absolute;
+    bottom: 208px;
+    left: 16px;
+    right: 16px;
+    height: 52px;
+    border-radius: 999px;
+    background: var(--color-accent-positive);
+    border: 0;
+    color: #ffffff;
+    font-family: inherit;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: -0.005em;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 12px;
+    box-shadow: 0 10px 24px rgba(78, 190, 150, 0.32), 0 2px 6px rgba(0, 0, 0, 0.30);
+    z-index: 8;
     cursor: pointer;
-    box-shadow: 0 16px 40px -8px rgba(255, 110, 50, 0.35);
-    margin-top: 4px;
   }
-  .frame--light .go-online-cta,
-  body.theme-light .go-online-cta {
-    box-shadow: 0 16px 36px -8px rgba(198, 90, 31, 0.30);
+  .frame--light .go-online,
+  body.theme-light .go-online {
+    box-shadow: 0 8px 20px rgba(16, 128, 92, 0.28), 0 2px 6px rgba(15, 23, 42, 0.08);
   }
-  .go-online-cta__hint {
-    text-align: center;
-    font-size: 12px;
-    color: var(--color-text-tertiary);
-    margin-top: 8px;
-    line-height: 17px;
+  .go-online__hint {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.75);
+    position: relative;
+    padding-left: 12px;
+  }
+  .go-online__hint::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 4px;
+    height: 4px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.55);
+  }
+
+  /* Bottom tab bar — floating pill */
+  .tab-bar-main {
+    background: var(--color-surface);
+    border: 1px solid var(--color-hairline);
+    border-radius: 22px;
+    height: 64px;
+    padding: 6px;
+    display: flex;
+    align-items: stretch;
+    gap: 2px;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.42), 0 2px 6px rgba(0, 0, 0, 0.28);
+    position: absolute;
+    bottom: 12px;
+    left: 12px;
+    right: 12px;
+    z-index: 10;
+  }
+  .frame--light .tab-bar-main,
+  body.theme-light .tab-bar-main {
+    box-shadow: 0 8px 22px rgba(15, 23, 42, 0.10), 0 2px 6px rgba(15, 23, 42, 0.06);
+  }
+  .tab-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    color: var(--color-text-secondary);
+    position: relative;
+    border-radius: 16px;
+    background: transparent;
+  }
+  .tab-main--active {
+    color: var(--color-text);
+    background: var(--color-surface-raised);
+    background-image: linear-gradient(180deg, rgba(71, 159, 250, 0.18), rgba(71, 159, 250, 0.04));
+    box-shadow: inset 0 0 0 1px rgba(71, 159, 250, 0.18);
+  }
+  .frame--light .tab-main--active,
+  body.theme-light .tab-main--active {
+    color: var(--color-accent-interactive);
+    background: var(--color-surface);
+    background-image: linear-gradient(180deg, rgba(21, 101, 192, 0.10), rgba(21, 101, 192, 0.02));
+    box-shadow: inset 0 0 0 1px rgba(21, 101, 192, 0.18);
+  }
+  .tab-main__label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+  .tab-main__badge {
+    position: absolute;
+    top: 8px;
+    right: calc(50% - 16px);
+    min-width: 16px;
+    height: 16px;
+    padding: 0 4px;
+    border-radius: 999px;
+    background: var(--color-accent-negative);
+    color: #ffffff;
+    font-size: 10px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid var(--color-surface);
+  }
+  /* Soft fade behind the floating tab bar */
+  .main-screen::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 120px;
+    background: linear-gradient(to top, var(--color-bg) 30%, transparent);
+    pointer-events: none;
+    z-index: 7;
   }
 
   /* ═══════════════════════ SETTINGS MENU ROWS ═══════════════════════ */
@@ -1327,61 +1458,91 @@
           </span>
         </div>
 
-        <div class="main-offline">
-          <div class="stats-row">
-            <div class="stat-tile">
-              <div class="stat-tile__label">Today</div>
-              <div class="stat-tile__value">12 400 ֏</div>
-              <div class="stat-tile__sub">8 trips</div>
+        <div class="main-screen">
+          <!-- Stats header (floats over map) -->
+          <div class="stats-header">
+            <div class="stat-block">
+              <div class="stat-block__label">Earned today</div>
+              <div class="stat-block__value">12 400</div>
+              <div class="stat-block__sub">8 trips</div>
             </div>
-            <div class="stat-tile">
-              <div class="stat-tile__label">Balance</div>
-              <div class="stat-tile__value">8 500 ֏</div>
-              <div class="stat-tile__sub">Available</div>
+            <div class="stat-block">
+              <div class="stat-block__label">Balance</div>
+              <div class="stat-block__value">8 500</div>
+              <div class="stat-block__sub">Available</div>
             </div>
-            <div class="stat-tile">
-              <div class="stat-tile__label">Bonus</div>
-              <div class="stat-tile__value">8 / 20</div>
-              <div class="stat-tile__sub">12 to go</div>
+            <div class="stat-block">
+              <div class="stat-block__label">Bonus</div>
+              <div class="stat-block__value">8 / 20 trips</div>
+              <div class="stat-block__progress"><div class="stat-block__progress-fill" style="width: 40%;"></div></div>
             </div>
           </div>
 
-          <div class="main-offline__map">
-            <div class="main-offline__map-pin"></div>
-          </div>
+          <!-- Map fills behind everything -->
+          <div class="driver-map"></div>
 
-          <div class="compact-sheet">
-            <div class="compact-sheet__icon">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17h14M6 13l2-5h8l2 5"/><circle cx="7.5" cy="17" r="2"/><circle cx="16.5" cy="17" r="2"/></svg>
-            </div>
-            <div class="compact-sheet__body">
-              <div class="compact-sheet__eyebrow">Current vehicle</div>
-              <div class="compact-sheet__name">Toyota Camry &middot; 12 AB 345</div>
-            </div>
-            <span class="compact-sheet__chevron">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-            </span>
-          </div>
-
-          <div class="compact-sheet">
-            <div class="compact-sheet__icon compact-sheet__icon--accent">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41 11 22.99 2 13.99V4h10l8.59 9.41Z"/><circle cx="7" cy="9" r="2"/></svg>
-            </div>
-            <div class="compact-sheet__body">
-              <div class="compact-sheet__eyebrow">Active tariffs</div>
-              <div class="compact-sheet__name">Economy &middot; Comfort</div>
-              <div class="compact-sheet__sub">2 of 4 &middot; tap to change</div>
-            </div>
-            <span class="compact-sheet__chevron">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-            </span>
-          </div>
-
-          <button class="go-online-cta">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="6 3 20 12 6 21 6 3"/></svg>
-            Go Online
+          <button class="map-fab map-fab--locate" aria-label="Recenter">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
           </button>
-          <div class="go-online-cta__hint">Hold to start &middot; both tariffs will be active</div>
+          <button class="map-fab map-fab--layers" aria-label="Layers">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+          </button>
+
+          <!-- Go Online (Emerald, primary CTA) -->
+          <button class="go-online">
+            <span style="font-size: 16px; font-weight: 700;">Go Online</span>
+            <span class="go-online__hint">Hold to start</span>
+          </button>
+
+          <!-- Tariff sheet — NEW entry point, sits above car-sheet -->
+          <div class="car-sheet tariff-sheet">
+            <div class="car-sheet__icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41 11 22.99 2 13.99V4h10l8.59 9.41Z"/><circle cx="7" cy="9" r="2"/></svg>
+            </div>
+            <div class="car-sheet__text">
+              <span class="car-sheet__name">Economy &middot; Comfort</span>
+              <span class="car-sheet__plate">2 active</span>
+            </div>
+            <span class="tariff-sheet__count">2 / 4</span>
+            <span class="car-sheet__chevron">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+            </span>
+          </div>
+
+          <!-- Car sheet (existing pattern) -->
+          <div class="car-sheet">
+            <div class="car-sheet__icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17h14M6 13l2-5h8l2 5"/><circle cx="7.5" cy="17" r="2"/><circle cx="16.5" cy="17" r="2"/></svg>
+            </div>
+            <div class="car-sheet__text">
+              <span class="car-sheet__name">Toyota Camry</span>
+              <span class="car-sheet__plate">777 AB 01</span>
+            </div>
+            <span class="car-sheet__chevron">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+            </span>
+          </div>
+
+          <!-- Bottom tab bar -->
+          <div class="tab-bar-main">
+            <div class="tab-main tab-main--active">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+              <span class="tab-main__label">Home</span>
+            </div>
+            <div class="tab-main">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              <span class="tab-main__label">Orders</span>
+              <span class="tab-main__badge">3</span>
+            </div>
+            <div class="tab-main">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="14" rx="2"/><path d="M2 12h20"/></svg>
+              <span class="tab-main__label">Wallet</span>
+            </div>
+            <div class="tab-main">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              <span class="tab-main__label">Profile</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -1400,61 +1561,85 @@
           </span>
         </div>
 
-        <div class="main-offline">
-          <div class="stats-row">
-            <div class="stat-tile">
-              <div class="stat-tile__label">Today</div>
-              <div class="stat-tile__value">12 400 ֏</div>
-              <div class="stat-tile__sub">8 trips</div>
+        <div class="main-screen">
+          <div class="stats-header">
+            <div class="stat-block">
+              <div class="stat-block__label">Earned today</div>
+              <div class="stat-block__value">12 400</div>
+              <div class="stat-block__sub">8 trips</div>
             </div>
-            <div class="stat-tile">
-              <div class="stat-tile__label">Balance</div>
-              <div class="stat-tile__value">8 500 ֏</div>
-              <div class="stat-tile__sub">Available</div>
+            <div class="stat-block">
+              <div class="stat-block__label">Balance</div>
+              <div class="stat-block__value">8 500</div>
+              <div class="stat-block__sub">Available</div>
             </div>
-            <div class="stat-tile">
-              <div class="stat-tile__label">Bonus</div>
-              <div class="stat-tile__value">8 / 20</div>
-              <div class="stat-tile__sub">12 to go</div>
+            <div class="stat-block">
+              <div class="stat-block__label">Bonus</div>
+              <div class="stat-block__value">8 / 20 trips</div>
+              <div class="stat-block__progress"><div class="stat-block__progress-fill" style="width: 40%;"></div></div>
             </div>
           </div>
 
-          <div class="main-offline__map">
-            <div class="main-offline__map-pin"></div>
-          </div>
+          <div class="driver-map"></div>
 
-          <div class="compact-sheet">
-            <div class="compact-sheet__icon">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17h14M6 13l2-5h8l2 5"/><circle cx="7.5" cy="17" r="2"/><circle cx="16.5" cy="17" r="2"/></svg>
-            </div>
-            <div class="compact-sheet__body">
-              <div class="compact-sheet__eyebrow">Current vehicle</div>
-              <div class="compact-sheet__name">Toyota Camry &middot; 12 AB 345</div>
-            </div>
-            <span class="compact-sheet__chevron">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-            </span>
-          </div>
-
-          <div class="compact-sheet">
-            <div class="compact-sheet__icon compact-sheet__icon--accent">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41 11 22.99 2 13.99V4h10l8.59 9.41Z"/><circle cx="7" cy="9" r="2"/></svg>
-            </div>
-            <div class="compact-sheet__body">
-              <div class="compact-sheet__eyebrow">Active tariffs</div>
-              <div class="compact-sheet__name">Economy &middot; Comfort</div>
-              <div class="compact-sheet__sub">2 of 4 &middot; tap to change</div>
-            </div>
-            <span class="compact-sheet__chevron">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-            </span>
-          </div>
-
-          <button class="go-online-cta">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="6 3 20 12 6 21 6 3"/></svg>
-            Go Online
+          <button class="map-fab map-fab--locate" aria-label="Recenter">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
           </button>
-          <div class="go-online-cta__hint">Hold to start &middot; both tariffs will be active</div>
+          <button class="map-fab map-fab--layers" aria-label="Layers">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+          </button>
+
+          <button class="go-online">
+            <span style="font-size: 16px; font-weight: 700;">Go Online</span>
+            <span class="go-online__hint">Hold to start</span>
+          </button>
+
+          <div class="car-sheet tariff-sheet">
+            <div class="car-sheet__icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41 11 22.99 2 13.99V4h10l8.59 9.41Z"/><circle cx="7" cy="9" r="2"/></svg>
+            </div>
+            <div class="car-sheet__text">
+              <span class="car-sheet__name">Economy &middot; Comfort</span>
+              <span class="car-sheet__plate">2 active</span>
+            </div>
+            <span class="tariff-sheet__count">2 / 4</span>
+            <span class="car-sheet__chevron">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+            </span>
+          </div>
+
+          <div class="car-sheet">
+            <div class="car-sheet__icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17h14M6 13l2-5h8l2 5"/><circle cx="7.5" cy="17" r="2"/><circle cx="16.5" cy="17" r="2"/></svg>
+            </div>
+            <div class="car-sheet__text">
+              <span class="car-sheet__name">Toyota Camry</span>
+              <span class="car-sheet__plate">777 AB 01</span>
+            </div>
+            <span class="car-sheet__chevron">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+            </span>
+          </div>
+
+          <div class="tab-bar-main">
+            <div class="tab-main tab-main--active">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+              <span class="tab-main__label">Home</span>
+            </div>
+            <div class="tab-main">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              <span class="tab-main__label">Orders</span>
+              <span class="tab-main__badge">3</span>
+            </div>
+            <div class="tab-main">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="14" rx="2"/><path d="M2 12h20"/></svg>
+              <span class="tab-main__label">Wallet</span>
+            </div>
+            <div class="tab-main">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              <span class="tab-main__label">Profile</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
