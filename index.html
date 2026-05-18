@@ -915,6 +915,176 @@
     font-weight: 700;
   }
 
+  /* ═══════════════════════ MAIN OFFLINE — SLIM STATS + CAR/TARIFF SHEETS ═══════════════════════ */
+  .main-offline {
+    position: absolute;
+    inset: 44px 0 0 0;
+    display: flex;
+    flex-direction: column;
+    padding: 8px 16px 16px;
+  }
+  .stats-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .stat-tile {
+    flex: 1;
+    background: var(--color-surface);
+    border: 1px solid var(--color-hairline);
+    border-radius: 14px;
+    padding: 12px 12px 14px;
+  }
+  .stat-tile__label {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--color-text-tertiary);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    line-height: 13px;
+  }
+  .stat-tile__value {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--color-text);
+    letter-spacing: -0.01em;
+    margin-top: 4px;
+    line-height: 22px;
+  }
+  .stat-tile__sub {
+    font-size: 11px;
+    color: var(--color-text-secondary);
+    margin-top: 2px;
+  }
+  .main-offline__map {
+    flex: 1;
+    border-radius: 18px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-hairline);
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 12px;
+  }
+  .main-offline__map::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(118deg, transparent 38%, rgba(255,255,255,0.04) 38%, rgba(255,255,255,0.04) 40%, transparent 40%),
+      linear-gradient(82deg, transparent 58%, rgba(255,255,255,0.04) 58%, rgba(255,255,255,0.04) 60%, transparent 60%),
+      linear-gradient(180deg, var(--color-surface), var(--color-bg) 80%);
+  }
+  .frame--light .main-offline__map::before,
+  body.theme-light .main-offline__map::before {
+    background:
+      linear-gradient(118deg, transparent 38%, rgba(15,23,42,0.05) 38%, rgba(15,23,42,0.05) 40%, transparent 40%),
+      linear-gradient(82deg, transparent 58%, rgba(15,23,42,0.05) 58%, rgba(15,23,42,0.05) 60%, transparent 60%),
+      linear-gradient(180deg, var(--color-surface), var(--color-bg) 80%);
+  }
+  .main-offline__map-pin {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 16px;
+    height: 16px;
+    margin: -8px 0 0 -8px;
+    border-radius: 999px;
+    background: var(--color-accent-interactive);
+    box-shadow: 0 0 0 4px rgba(71,159,250,0.20), 0 0 0 12px rgba(71,159,250,0.08);
+  }
+  .frame--light .main-offline__map-pin,
+  body.theme-light .main-offline__map-pin {
+    box-shadow: 0 0 0 4px rgba(21,101,192,0.16), 0 0 0 12px rgba(21,101,192,0.06);
+  }
+
+  /* Compact sheet (mirrors app.html .car-sheet — used for car + tariff entry rows) */
+  .compact-sheet {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-hairline);
+    border-radius: 16px;
+    cursor: pointer;
+    margin-bottom: 8px;
+  }
+  .compact-sheet__icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: var(--color-surface-raised);
+    color: var(--color-text-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .compact-sheet__icon--accent {
+    background: rgba(71,159,250,0.10);
+    color: var(--color-accent-interactive);
+  }
+  .frame--light .compact-sheet__icon--accent,
+  body.theme-light .compact-sheet__icon--accent {
+    background: rgba(21,101,192,0.08);
+  }
+  .compact-sheet__body { flex: 1; min-width: 0; }
+  .compact-sheet__eyebrow {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-text-tertiary);
+    line-height: 13px;
+  }
+  .compact-sheet__name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-text);
+    line-height: 18px;
+  }
+  .compact-sheet__sub {
+    font-size: 12px;
+    color: var(--color-text-secondary);
+    margin-top: 1px;
+    line-height: 16px;
+  }
+  .compact-sheet__chevron {
+    color: var(--color-text-tertiary);
+    flex-shrink: 0;
+  }
+
+  /* Premium "Go online" CTA (offline state) */
+  .go-online-cta {
+    height: 64px;
+    border-radius: 999px;
+    background: var(--gradient-warn, linear-gradient(135deg, #ff9670 0%, #d97550 100%));
+    color: #ffffff;
+    border: 0;
+    font-family: inherit;
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    cursor: pointer;
+    box-shadow: 0 16px 40px -8px rgba(255, 110, 50, 0.35);
+    margin-top: 4px;
+  }
+  .frame--light .go-online-cta,
+  body.theme-light .go-online-cta {
+    box-shadow: 0 16px 36px -8px rgba(198, 90, 31, 0.30);
+  }
+  .go-online-cta__hint {
+    text-align: center;
+    font-size: 12px;
+    color: var(--color-text-tertiary);
+    margin-top: 8px;
+    line-height: 17px;
+  }
+
   /* ═══════════════════════ SETTINGS MENU ROWS ═══════════════════════ */
   .settings-scroll {
     padding: 8px 16px 0;
@@ -1124,7 +1294,7 @@
 <body class="theme-dark">
 
 <div class="page-header">
-  <div class="page-title">Driver App <small>Tariffs &amp; Add Vehicle · 6 new screens · dark + light</small></div>
+  <div class="page-title">Driver App <small>Tariffs &amp; Add Vehicle · 7 new screens · dark + light</small></div>
   <div class="theme-toggle">
     <button class="active" data-theme="dark">Dark</button>
     <button data-theme="light">Light</button>
@@ -1132,13 +1302,175 @@
 </div>
 
 <!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- SECTION 2.A2 — Main · Offline (with tariff entry chip)          -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">2.A2 · NEW</span>
+    <h2 class="section-title">Main &middot; Offline (tariff entry)</h2>
+    <p class="section-desc">Updated offline state. New &ldquo;Active tariffs&rdquo; row sits right below the current-vehicle row and above the Go&nbsp;Online CTA &mdash; one tap opens the 2.E sheet. Both rows use the same sheet pattern so they read as a pair.</p>
+  </div>
+
+  <div class="frames-grid">
+
+    <!-- 2.A2 · DARK -->
+    <div class="stage">
+      <div class="stage-label"><span class="stage-label-num">2.A2</span>Main &middot; Offline &middot; Dark</div>
+      <div class="frame frame--dark">
+        <div class="notch"></div>
+        <div class="status-bar">
+          <span class="status-bar__time">9:41</span>
+          <span class="status-bar__icons">
+            <svg width="18" height="10" viewBox="0 0 18 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx="1"/><rect x="5" y="4" width="3" height="6" rx="1"/><rect x="10" y="2" width="3" height="8" rx="1"/><rect x="15" y="0" width="3" height="10" rx="1"/></svg>
+            <svg width="16" height="12" viewBox="0 0 16 12" fill="currentColor"><path d="M8 11.2a1.2 1.2 0 1 0 0-2.4 1.2 1.2 0 0 0 0 2.4Zm3.4-3.6a4.8 4.8 0 0 0-6.8 0L3.4 6.4a6.5 6.5 0 0 1 9.2 0l-1.2 1.2ZM14 5l-1.2 1.2A7.6 7.6 0 0 0 8 4.4 7.6 7.6 0 0 0 3.2 6.2L2 5a9.3 9.3 0 0 1 12 0Z"/></svg>
+            <svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="0.5" y="0.5" width="22" height="11" rx="3" stroke="currentColor" opacity="0.4"/><rect x="2" y="2" width="18" height="8" rx="1.5" fill="currentColor"/><rect x="23" y="4" width="2" height="4" rx="1" fill="currentColor" opacity="0.4"/></svg>
+          </span>
+        </div>
+
+        <div class="main-offline">
+          <div class="stats-row">
+            <div class="stat-tile">
+              <div class="stat-tile__label">Today</div>
+              <div class="stat-tile__value">12 400 ֏</div>
+              <div class="stat-tile__sub">8 trips</div>
+            </div>
+            <div class="stat-tile">
+              <div class="stat-tile__label">Balance</div>
+              <div class="stat-tile__value">8 500 ֏</div>
+              <div class="stat-tile__sub">Available</div>
+            </div>
+            <div class="stat-tile">
+              <div class="stat-tile__label">Bonus</div>
+              <div class="stat-tile__value">8 / 20</div>
+              <div class="stat-tile__sub">12 to go</div>
+            </div>
+          </div>
+
+          <div class="main-offline__map">
+            <div class="main-offline__map-pin"></div>
+          </div>
+
+          <div class="compact-sheet">
+            <div class="compact-sheet__icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17h14M6 13l2-5h8l2 5"/><circle cx="7.5" cy="17" r="2"/><circle cx="16.5" cy="17" r="2"/></svg>
+            </div>
+            <div class="compact-sheet__body">
+              <div class="compact-sheet__eyebrow">Current vehicle</div>
+              <div class="compact-sheet__name">Toyota Camry &middot; 12 AB 345</div>
+            </div>
+            <span class="compact-sheet__chevron">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+            </span>
+          </div>
+
+          <div class="compact-sheet">
+            <div class="compact-sheet__icon compact-sheet__icon--accent">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41 11 22.99 2 13.99V4h10l8.59 9.41Z"/><circle cx="7" cy="9" r="2"/></svg>
+            </div>
+            <div class="compact-sheet__body">
+              <div class="compact-sheet__eyebrow">Active tariffs</div>
+              <div class="compact-sheet__name">Economy &middot; Comfort</div>
+              <div class="compact-sheet__sub">2 of 4 &middot; tap to change</div>
+            </div>
+            <span class="compact-sheet__chevron">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+            </span>
+          </div>
+
+          <button class="go-online-cta">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="6 3 20 12 6 21 6 3"/></svg>
+            Go Online
+          </button>
+          <div class="go-online-cta__hint">Hold to start &middot; both tariffs will be active</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2.A2 · LIGHT -->
+    <div class="stage">
+      <div class="stage-label"><span class="stage-label-num">2.A2</span>Main &middot; Offline &middot; Light</div>
+      <div class="frame frame--light">
+        <div class="notch"></div>
+        <div class="status-bar">
+          <span class="status-bar__time">9:41</span>
+          <span class="status-bar__icons">
+            <svg width="18" height="10" viewBox="0 0 18 10" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx="1"/><rect x="5" y="4" width="3" height="6" rx="1"/><rect x="10" y="2" width="3" height="8" rx="1"/><rect x="15" y="0" width="3" height="10" rx="1"/></svg>
+            <svg width="16" height="12" viewBox="0 0 16 12" fill="currentColor"><path d="M8 11.2a1.2 1.2 0 1 0 0-2.4 1.2 1.2 0 0 0 0 2.4Zm3.4-3.6a4.8 4.8 0 0 0-6.8 0L3.4 6.4a6.5 6.5 0 0 1 9.2 0l-1.2 1.2ZM14 5l-1.2 1.2A7.6 7.6 0 0 0 8 4.4 7.6 7.6 0 0 0 3.2 6.2L2 5a9.3 9.3 0 0 1 12 0Z"/></svg>
+            <svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="0.5" y="0.5" width="22" height="11" rx="3" stroke="currentColor" opacity="0.4"/><rect x="2" y="2" width="18" height="8" rx="1.5" fill="currentColor"/><rect x="23" y="4" width="2" height="4" rx="1" fill="currentColor" opacity="0.4"/></svg>
+          </span>
+        </div>
+
+        <div class="main-offline">
+          <div class="stats-row">
+            <div class="stat-tile">
+              <div class="stat-tile__label">Today</div>
+              <div class="stat-tile__value">12 400 ֏</div>
+              <div class="stat-tile__sub">8 trips</div>
+            </div>
+            <div class="stat-tile">
+              <div class="stat-tile__label">Balance</div>
+              <div class="stat-tile__value">8 500 ֏</div>
+              <div class="stat-tile__sub">Available</div>
+            </div>
+            <div class="stat-tile">
+              <div class="stat-tile__label">Bonus</div>
+              <div class="stat-tile__value">8 / 20</div>
+              <div class="stat-tile__sub">12 to go</div>
+            </div>
+          </div>
+
+          <div class="main-offline__map">
+            <div class="main-offline__map-pin"></div>
+          </div>
+
+          <div class="compact-sheet">
+            <div class="compact-sheet__icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17h14M6 13l2-5h8l2 5"/><circle cx="7.5" cy="17" r="2"/><circle cx="16.5" cy="17" r="2"/></svg>
+            </div>
+            <div class="compact-sheet__body">
+              <div class="compact-sheet__eyebrow">Current vehicle</div>
+              <div class="compact-sheet__name">Toyota Camry &middot; 12 AB 345</div>
+            </div>
+            <span class="compact-sheet__chevron">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+            </span>
+          </div>
+
+          <div class="compact-sheet">
+            <div class="compact-sheet__icon compact-sheet__icon--accent">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41 11 22.99 2 13.99V4h10l8.59 9.41Z"/><circle cx="7" cy="9" r="2"/></svg>
+            </div>
+            <div class="compact-sheet__body">
+              <div class="compact-sheet__eyebrow">Active tariffs</div>
+              <div class="compact-sheet__name">Economy &middot; Comfort</div>
+              <div class="compact-sheet__sub">2 of 4 &middot; tap to change</div>
+            </div>
+            <span class="compact-sheet__chevron">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+            </span>
+          </div>
+
+          <button class="go-online-cta">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="6 3 20 12 6 21 6 3"/></svg>
+            Go Online
+          </button>
+          <div class="go-online-cta__hint">Hold to start &middot; both tariffs will be active</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
 <!-- SECTION 2 — Tariff Picker (new sub-state of Main Screen)        -->
 <!-- ═══════════════════════════════════════════════════════════════ -->
 <div class="section">
   <div class="section-header">
-    <span class="section-num">2 · NEW</span>
+    <span class="section-num">2.E · NEW</span>
     <h2 class="section-title">Tariff Picker</h2>
-    <p class="section-desc">Bottom sheet over the offline main screen. Driver toggles which of the current vehicle&rsquo;s allowed tariffs they want active for this session. Solar Flare hint on the demand-peak tariff.</p>
+    <p class="section-desc">Opens when the driver taps the &ldquo;Active tariffs&rdquo; row on 2.A2 (or the Settings entry on 8.C2). Bottom sheet over the dimmed main screen. Driver toggles which of the current vehicle&rsquo;s allowed tariffs they want active for this session. Solar Flare hint on the demand-peak tariff.</p>
   </div>
 
   <div class="frames-grid">
